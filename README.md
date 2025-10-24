@@ -241,3 +241,42 @@ A: Demo 会提供完整的 `docker-compose.yml` 配置，你只需要按需修�
 - [CNB 云原生开发](https://docs.cnb.cool/zh/workspaces/intro.html)
 - [Next.js 官方文档](https://nextjs.org/docs)
 - [LangGraph 官方文档](https://docs.langchain.com/oss/python/langgraph/overview)
+
+## 本地开发
+
+### 1. 前置要求
+
+- Node.js 和 npm（或 yarn/pnpm）
+- Python 3.11+
+- CNB_TOKEN：后端 agent 需要 CNB TOKEN。
+  - 进入 `backend/` 目录
+  - 通过复制 `backend/.env.example` 文件创建一个名为 `.env` 的文件
+  - 打开 `.env` 文件并添加你的 CNB TOKEN：`CNB_TOKEN="YOUR_CNB_TOKEN"`
+
+### 2. 安装依赖
+
+**后端：**
+```bash
+cd backend
+pip install .
+```
+
+**前端：**
+```bash
+cd frontend
+npm install
+```
+
+### 3. 运行开发服务器
+
+**后端和前端：**
+```bash
+make dev
+```
+
+这将运行后端和前端开发服务器。打开浏览器并导航到前端开发服务器 URL（例如，http://localhost:5173/app）。
+
+**或者，你可以分别运行后端和前端开发服务器：**
+
+- **后端**：在 `backend/` 目录中打开一个终端并运行 `langgraph dev`。后端 API 将在 http://127.0.0.1:2024 可用。它还会打开一个浏览器窗口到 LangGraph UI。
+- **前端**：在 `frontend/` 目录中打开一个终端并运行 `npm run dev`。前端将在 http://localhost:5173 可用。
