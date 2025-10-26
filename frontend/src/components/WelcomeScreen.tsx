@@ -1,11 +1,7 @@
 import { InputForm } from "./InputForm";
 
 interface WelcomeScreenProps {
-  handleSubmit: (
-    submittedInputValue: string,
-    effort: string,
-    model: string
-  ) => void;
+  handleSubmit: (submittedInputValue: string) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
@@ -26,6 +22,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     </div>
     <div className="w-full mt-4">
       <InputForm
+  
         onSubmit={handleSubmit}
         isLoading={isLoading}
         onCancel={onCancel}
