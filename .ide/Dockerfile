@@ -1,4 +1,3 @@
-# 使用 Python 3.11 作为基础镜像
 FROM python:3.11-bullseye
 
 # 安装 Node.js 20 和 npm
@@ -56,3 +55,11 @@ ENV SHELL /bin/zsh
 ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 ENV LC_ALL C.UTF-8
+
+# 安装 Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# 配置 Ollama 环境变量
+ENV OLLAMA_MODELS=/workspace/models
+ENV OLLAMA_HOST=0.0.0.0
+ENV OLLAMA_ORIGINS=*
