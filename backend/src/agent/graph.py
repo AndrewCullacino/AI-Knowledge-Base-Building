@@ -2,15 +2,16 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
 from langgraph.graph import StateGraph
 from langgraph.graph import START, END
 from langchain_core.runnables import RunnableConfig
+from langchain_ollama import ChatOllama
 
 from agent.state import AgentState
 from agent.configuration import Configuration
 from agent.prompts import get_current_date, get_user_query, system_prompt_template
-from agent.cnb_utils import CNBKnowledgeBase, CNBChatClient
+from agent.cnb_utils import CNBKnowledgeBase
 
 load_dotenv()
 
@@ -57,7 +58,7 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
 
 
 def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
-    """Generate answer using CNB chat API with knowledge base context.
+    """Generate answer using Ollama with knowledge base context.
 
     Args:
         state: Current graph state containing context and messages
@@ -68,45 +69,41 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     configurable = Configuration.from_runnable_config(config)
 
-    # Initialize CNB chat client
-    chat_client = CNBChatClient(
-        api_base=configurable.cnb_api_base,
-        repo_slug=configurable.cnb_repo_slug,
-        api_token=configurable.cnb_token,
+    # Initialize Ollama chat client
+    llm = ChatOllama(
+        model=configurable.ollama_model,
+        base_url=configurable.ollama_base_url,
+        temperature=configurable.ollama_temperature,
     )
 
     # Prepare messages for chat API
     current_date = get_current_date()
-    system_message = system_prompt_template.format(
+    system_message_content = system_prompt_template.format(
         current_date=current_date, context=state.get("context", "")
     )
 
-    # Build message list
-    messages = [{"role": "system", "content": system_message}]
+    # Build message list using LangChain message types
+    messages = [SystemMessage(content=system_message_content)]
 
     # Add conversation history
     for msg in state["messages"]:
         if hasattr(msg, "type"):
-            role = "user" if msg.type == "human" else "assistant"
-            messages.append({"role": role, "content": msg.content})
+            if msg.type == "human":
+                messages.append(HumanMessage(content=msg.content))
+            elif msg.type == "ai":
+                messages.append(AIMessage(content=msg.content))
         elif isinstance(msg, dict):
-            messages.append(msg)
+            role = msg.get("role", "")
+            content = msg.get("content", "")
+            if role == "user":
+                messages.append(HumanMessage(content=content))
+            elif role == "assistant":
+                messages.append(AIMessage(content=content))
 
-    # Call CNB chat API
-    response = chat_client.chat_completion(
-        messages=messages, model=configurable.chat_model, stream=False
-    )
+    # Call Ollama
+    response = llm.invoke(messages)
 
-    # Extract response content
-    answer_content = ""
-    if "choices" in response and len(response["choices"]) > 0:
-        choice = response["choices"][0]
-        if "message" in choice:
-            answer_content = choice["message"].get("content", "")
-        elif "content" in choice:
-            answer_content = choice["content"]
-
-    return {"messages": [AIMessage(content=answer_content)]}
+    return {"messages": [AIMessage(content=response.content)]}
 
 
 # Create the simplified agent graph

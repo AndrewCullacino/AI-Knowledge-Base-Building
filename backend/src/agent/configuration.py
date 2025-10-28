@@ -29,10 +29,24 @@ class Configuration(BaseModel):
         },
     )
 
-    chat_model: str = Field(
-        default="hunyuan-a13b",
+    ollama_model: str = Field(
+        default="qwen3:32b",
         metadata={
-            "description": "The chat model to use for generating answers."
+            "description": "The Ollama model to use for generating answers."
+        },
+    )
+
+    ollama_base_url: str = Field(
+        default="http://localhost:11434",
+        metadata={
+            "description": "The base URL for the Ollama server."
+        },
+    )
+
+    ollama_temperature: float = Field(
+        default=0.7,
+        metadata={
+            "description": "Temperature setting for Ollama model generation."
         },
     )
 
