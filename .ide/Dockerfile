@@ -20,12 +20,14 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh \
 # 安装系统依赖（git, wget, unzip, openssh-server, make, zsh 等）
 RUN apt-get update && apt-get install -y \
   git \
+  git-lfs \
   wget \
   unzip \
   openssh-server \
   make \
   build-essential \
   zsh \
+  && git lfs install \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
