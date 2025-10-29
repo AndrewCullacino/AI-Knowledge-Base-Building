@@ -306,3 +306,8 @@ make dev
 
 - **后端**：在 `backend/` 目录中打开一个终端并运行 `langgraph dev`。后端 API 将在 http://127.0.0.1:2024 可用。它还会打开一个浏览器窗口到 LangGraph UI。
 - **前端**：在 `frontend/` 目录中打开一个终端并运行 `npm run dev`。前端将在 http://localhost:5173 可用。
+
+
+## Demo 代码运作方式说明
+
+基本上和 [CNB 知识库](https://docs.cnb.cool/zh/ai/knowledge-base.html) 一致，前端收到用户的 Query 后，会调用后端 API 进行查询，后端 API 会调用 CNB 知识库 API 进行查询，然后交给 LLM 结合 Prompt 生成答案。
