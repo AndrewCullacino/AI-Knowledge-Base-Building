@@ -251,12 +251,17 @@ A: Demo 会提供完整的 `docker-compose.yml` 配置，你只需要按需修�
 
 ### 2. 启动 Docker Compose
 ```bash
-docker compose up -d
+docker compose up
 ```
 
-### 3. 在端口转发中，添加 8123 端口，并且访问即可， 例如：
+### 3. 在远程开发端口转发中，添加 8123 端口，并且访问即可， 例如：
 ```bash
+# 如果是远程开发， 注意 XXX 是转发后会在端口 Tab 中展示
+https://xxx-8123.cnb.run/app/
+
+# 如果是本地
 http://localhost:8123/app/
+
 ```
 
 ## 本地开发

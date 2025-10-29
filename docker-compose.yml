@@ -44,6 +44,7 @@ services:
         condition: service_healthy
     environment:
       CNB_TOKEN: ${CNB_TOKEN}
+      CNB_REPO_SLUG: ${CNB_REPO_SLUG}
       LANGSMITH_API_KEY: ${LANGSMITH_API_KEY}
       REDIS_URI: redis://langgraph-redis:6379
       POSTGRES_URI: postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
