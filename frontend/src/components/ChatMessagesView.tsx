@@ -1,7 +1,7 @@
 import type React from "react";
 import type { Message } from "@langchain/langgraph-sdk";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Copy, CopyCheck } from "lucide-react";
+import { Loader2, Copy, CopyCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { InputForm } from "@/components/InputForm";
 import { Button } from "@/components/ui/button";
 import { useState, ReactNode } from "react";
@@ -185,6 +185,10 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
   const activityForThisBubble =
     isLastMessage && isOverallLoading ? liveActivity : historicalActivity;
   const isLiveActivityForThisBubble = isLastMessage && isOverallLoading;
+  const [showReasoning, setShowReasoning] = useState(true); // Default to expanded
+  
+  // Extract reasoning content from message additional_kwargs
+  const reasoningContent = (message as any).additional_kwargs?.reasoning_content || "";
 
   return (
     <div className={`relative break-words flex flex-col`}>
@@ -194,6 +198,30 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
             processedEvents={activityForThisBubble}
             isLoading={isLiveActivityForThisBubble}
           />
+        </div>
+      )}
+      {reasoningContent && (
+        <div className="mb-3">
+          <button
+            onClick={() => setShowReasoning(!showReasoning)}
+            className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 mb-2 transition-colors"
+          >
+            <span>🤔</span>
+            <span>Thinking Process</span>
+            <span className="text-xs text-neutral-500">({reasoningContent.length} chars)</span>
+            {showReasoning ? (
+              <ChevronUp className="w-4 h-4 ml-auto" />
+            ) : (
+              <ChevronDown className="w-4 h-4 ml-auto" />
+            )}
+          </button>
+          {showReasoning && (
+            <div className="bg-neutral-900 rounded-lg p-3 text-sm border border-neutral-700">
+              <div className="text-neutral-400 italic whitespace-pre-wrap">
+                {reasoningContent}
+              </div>
+            </div>
+          )}
         </div>
       )}
       <ReactMarkdown components={mdComponents}>

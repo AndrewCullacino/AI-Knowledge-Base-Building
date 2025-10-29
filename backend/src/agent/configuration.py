@@ -50,6 +50,13 @@ class Configuration(BaseModel):
         },
     )
 
+    ollama_reasoning: bool = Field(
+        default=True,
+        metadata={
+            "description": "Enable reasoning mode for Ollama. When True, reasoning content is captured separately in additional_kwargs."
+        },
+    )
+
     top_k_results: int = Field(
         default=5,
         metadata={"description": "Number of knowledge base results to retrieve."},

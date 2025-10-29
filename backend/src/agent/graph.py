@@ -74,6 +74,7 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
         model=configurable.ollama_model,
         base_url=configurable.ollama_base_url,
         temperature=configurable.ollama_temperature,
+        reasoning=configurable.ollama_reasoning,
     )
 
     # Prepare messages for chat API
@@ -103,7 +104,9 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     # Call Ollama
     response = llm.invoke(messages)
 
-    return {"messages": [AIMessage(content=response.content)]}
+    # Return the AI message with reasoning_content preserved in additional_kwargs
+    # The reasoning_content will be automatically streamed in additional_kwargs when streaming is enabled
+    return {"messages": [response]}
 
 
 # Create the simplified agent graph
