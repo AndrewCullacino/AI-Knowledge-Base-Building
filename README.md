@@ -249,7 +249,7 @@ A: Demo 会提供完整的 `docker-compose.yml` 配置，你只需要按需修�
 
 ### 1. 前置要求
 - 需要注册 LangSmith 账号，并获取 API Key，打开 https://smith.langchain.com ，点击 API Keys -> API Key 生成 API Key
-- 将 API Key 保存到 `.env` 文件中，命名为 `LANGSMITH_API_KEY`
+- 复制 `backend/.env.example` 文件创建一个名为 `.env` 的文件，将 API Key 保存到 ` backend/.env` 文件中，命名为 `LANGSMITH_API_KEY`
 
 ### 2. 启动 Docker Compose
 ```bash
