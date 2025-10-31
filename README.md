@@ -62,6 +62,17 @@
 **资料：**
 - [LangGraph DeepResearch 示例](https://academy.langchain.com/courses/deep-research-with-langgraph)
 
+```mermaid
+flowchart TD
+    A([问题]) --> B[生成查询]
+    B --> C[检索知识库]
+    C --> D[检索结果]
+    D --> E[反思]
+    E -->|需要更多研究| C
+    E -->|上下文充足| F[生成答案]
+    F --> G([答案])
+```
+
 ---
 
 ### 场景 3：企业微信 Bot / 客服号 ⭐⭐⭐⭐
