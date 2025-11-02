@@ -40,8 +40,9 @@
 **要求：** 在 Demo 基础上增强对话功能
 
 **核心功能：**
-- 支持前端切换知识库（也就是不同的 Git 仓库），可以先查阅 [CNB 知识库 API 文档](https://docs.cnb.cool/zh/ai/knowledge-base.html) 了解如何使用 API 获取知识库列表和内容。
-- 引用来源角标展示，点击角标可以跳转到对应的文档页面 （CNB知识库接口支持返回元数据包含文档标题、path、url 等）
+- 支持前端切换知识库（也就是不同的 Git 仓库 ，如 cnb/docs ， 或者是你自己的仓库），可以先查阅 [CNB 知识库 API 文档](https://docs.cnb.cool/zh/ai/knowledge-base.html) 了解如何使用 API 获取知识库列表和内容。
+  - 建议可以简单搞成一个输入框可以输入不同的仓库名字即可。
+- 引用来源角标展示，点击角标可以跳转到对应的文档页面 （CNB知识库接口支持返回元数据metadata包含文档标题、path、url 等）
 
 ---
 
