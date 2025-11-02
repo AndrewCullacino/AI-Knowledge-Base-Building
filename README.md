@@ -61,6 +61,10 @@
 - 普通对话：问一次 → 检索一次 → 回答
 - DeepResearch：问一次 → 拆解问题 → 多次检索 → 整合信息 → 生成报告
 
+
+<img src="./assets/deepsearch.png" alt="Deep Research" width="500">
+
+
 **资料：**
 - [LangGraph DeepResearch 示例](https://academy.langchain.com/courses/deep-research-with-langgraph)
 
