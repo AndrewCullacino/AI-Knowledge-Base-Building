@@ -20,6 +20,22 @@ body:
       required: true
       
   - type: textarea
+    id: project-description
+    attributes:
+      label: 📝 项目说明
+      description: 请说明你的仓库做了什么功能，以及如何使用知识库
+      placeholder: |
+        ### 功能说明
+        我的仓库结合知识库实现了...
+        
+        ### 特色功能
+        - 功能1
+        - 功能2
+      render: markdown
+    validations:
+      required: true
+      
+  - type: textarea
     id: video-demo
     attributes:
       label: 🎬 演示视频
