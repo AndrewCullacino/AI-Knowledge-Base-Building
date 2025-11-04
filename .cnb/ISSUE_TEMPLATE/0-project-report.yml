@@ -1,0 +1,49 @@
+name: Open Camp 知识库项目作业提交
+description: 用于提交知识库项目作业
+labels:
+  - 作业提交
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📚 Open Camp 知识库项目作业提交
+        
+        请按照要求填写以下信息，提交后等待老师阅读并评测。
+        
+  - type: input
+    id: repo-url
+    attributes:
+      label: 📦 作业仓库地址
+      description: 请提供你的 CNB 仓库完整 URL
+      placeholder: https://cnb.cool/your-org/your-repo
+    validations:
+      required: true
+      
+  - type: textarea
+    id: video-demo
+    attributes:
+      label: 🎬 演示视频
+      description: 请提供演示视频链接（请确保同样已在你的仓库 README 中贴上该视频）
+      placeholder: |
+        上传视频到这里
+      render: markdown
+    validations:
+      required: true
+      
+  - type: checkboxes
+    id: readme-checklist
+    attributes:
+      label: ✅ README 检查清单
+      description: 请确认你的仓库 README 中已包含以下内容
+      options:
+        - label: 已在 README 已经说明了作业的仓库是做了哪个场景的功能、以及贴上演示视频
+          required: true
+        - label: 已在 README 中写清楚如何使用仓库、如何启动、需要前置配置什么等
+          required: true
+     
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        提交后请耐心等待老师阅读并评测。祝你顺利通过！🎉
