@@ -1,0 +1,43 @@
+name: Open Camp 知识库项目答疑
+description: 用于提交知识库项目作业过程中遇到的问题
+labels:
+  - 答疑
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💬 Open Camp 知识库项目答疑
+        
+        在完成知识库项目作业过程中遇到问题？请详细描述你的问题，老师会尽快回复。
+        
+  - type: input
+    id: repo-url
+    attributes:
+      label: 📦 仓库地址
+      description: 请提供你的 CNB 仓库完整 URL
+      placeholder: https://cnb.cool/your-org/your-repo
+    validations:
+      required: true
+      
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: ❓ 问题描述
+      description: 请详细描述你遇到的问题，包括问题发生的场景、预期行为和实际行为
+      placeholder: |
+        ### 问题场景
+        我在开发时...
+        
+        ### 预期行为
+        我期望...
+        
+        ### 实际行为
+        但实际上...
+
+        ### 报错信息
+        如果有报错信息，请完整粘贴在这里...
+
+      render: markdown
+    validations:
+      required: true
+      
