@@ -94,7 +94,7 @@ flowchart TD
 
 ---
 
-### 场景 4：VuePress 文档插件 ⭐⭐⭐⭐
+### 场景 4：VuePress  等文档站点的插件 ⭐⭐⭐⭐
 **要求：** 将 CNB 知识库嵌入到文档站点中（如 VuePress 等）
 
 **核心功能：**
