@@ -223,7 +223,7 @@ A: 可以！建议先完成一个场景，再扩展其他场景。
 A: LangGraph 是用于构建复杂 AI 工作流的框架，它可以帮你编排多步骤的推理和检索流程。是当前最流行的 AI 工作流框架之一。
 
 **Q: CNB 知识库怎么用？**  
-A: 你会得到一个 Git 仓库地址，上传 markdown 文件后，系统自动构建知识库。然后调用提供的 API 接口即可查询。
+A: 你会得到一个 Git 仓库地址，上传 markdown 文件后，系统自动构建知识库。然后调用提供的 API 接口即可查询。 [链接更多👉](https://docs.cnb.cool/zh/ai/knowledge-base.html#bu-zhou-2-shi-yong-zhi-shi-ku)
 
 **Q: 必须用本地 ollama 吗？**  
 A: 建议使用本地 ollama，因为 CNB 云原生开发环境带 GPU 资源，可以快速启动模型。
