@@ -264,11 +264,15 @@ A: Demo 会提供完整的 `docker-compose.yml` 配置，你只需要按需修�
 --------------------------------
 
 
-## Docker compose 快速体验
+## Docker compose 快速体验 (适合在云原生开发快速体验)
 
 ### 1. 前置要求
 - 需要注册 LangSmith 账号，并获取 API Key，打开 https://smith.langchain.com ，点击 API Keys -> API Key 生成 API Key
-- 复制 `backend/.env.example` 文件创建一个名为 `.env` 的文件，将 API Key 保存到 ` backend/.env` 文件中，命名为 `LANGSMITH_API_KEY`
+- 需要在环境变量增加 `LANGSMITH_API_KEY` （注意是 export 到 环境变量上）
+
+```bash
+export LANGSMITH_API_KEY=your_api_key
+```
 
 ### 2. 启动 Docker Compose
 ```bash
@@ -287,7 +291,7 @@ https://xxx-8123.cnb.run/app/
 http://localhost:8123/app/
 ```
 
-## 本地开发
+## 本地开发 （适合开发）
 
 ### 1. 前置要求
 
