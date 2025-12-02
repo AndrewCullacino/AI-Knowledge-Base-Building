@@ -30,7 +30,7 @@ class Configuration(BaseModel):
     )
 
     ollama_model: str = Field(
-        default="qwen3:32b",
+        default="qwen3:8b",
         metadata={
             "description": "The Ollama model to use for generating answers."
         },
