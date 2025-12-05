@@ -1,5 +1,6 @@
 """Simplified LangGraph agent using CNB knowledge base."""
 import os
+import json
 
 from dotenv import load_dotenv
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
@@ -12,6 +13,7 @@ from agent.state import AgentState
 from agent.configuration import Configuration
 from agent.prompts import get_current_date, get_user_query, system_prompt_template
 from agent.cnb_utils import CNBKnowledgeBase
+from agent.cnb_retrieval import query_cnb_knowledge_base
 
 load_dotenv()
 
@@ -29,31 +31,49 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     configurable = Configuration.from_runnable_config(config)
 
-    # Initialize CNB knowledge base client
-    kb_client = CNBKnowledgeBase(
-        api_base=configurable.cnb_api_base,
-        repo_slug=configurable.cnb_repo_slug,
-        api_token=configurable.cnb_token,
-    )
+    messages = state["messages"]
+    repo = state.get("repository", "cnb/docs")
+
+    # Get last user message
+    last_message = messages[-1].content if messages else ""
 
     # Extract user query from messages
     user_query = get_user_query(state["messages"])
 
+    print(f"\n{'='*80}")
+    print(f"🔍 RETRIEVE_KNOWLEDGE DEBUG")
+    print(f"{'='*80}")
+    print(f"Repository: {repo}")
+    print(f"Query: {last_message}")
+    print(f"Top K: 10")
+
     # Query the knowledge base
-    results = kb_client.query_knowledge_base(
-        query=user_query, top_k=configurable.top_k_results
+    result = query_cnb_knowledge_base(
+        query=last_message,
+        repository=repo,
+        top_k=10
     )
 
-    # Format context for LLM
-    context = kb_client.format_context_for_llm(results)
+    print(f"\n📊 CNB API Results:")
+    print(f"  - Number of results: {len(result.get('results', []))}")
+    print(f"  - Number of sources: {len(result.get('sources', []))}")
 
-    # Extract sources
-    sources = kb_client.get_sources_from_results(results)
+    # Each chunk gets a citation number - API returns "chunk" field, not "content"
+    context = "\n\n".join([
+        f"Source [{i+1}]: {chunk.get('chunk', '')}"
+        for i, chunk in enumerate(result["results"])
+    ])
+
+    print(f"\n📝 Generated Context:")
+    print(f"  - Context length: {len(context)} characters")
+    print(f"  - Context preview (first 500 chars):")
+    print(f"  {context[:500]}...")
+    print(f"{'='*80}\n")
 
     return {
-        "knowledge_base_results": results,
+        **state,
         "context": context,
-        "sources_gathered": sources,
+        "sources": result["sources"]
     }
 
 
@@ -68,6 +88,18 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
         Dictionary with state update including the AI response message
     """
     configurable = Configuration.from_runnable_config(config)
+    context = state.get("context", "")
+    sources = state.get("sources", [])
+    messages = state["messages"]
+    last_message = messages[-1].content
+
+    print(f"\n{'='*80}")
+    print(f"🤖 GENERATE_ANSWER DEBUG")
+    print(f"{'='*80}")
+    print(f"Context length: {len(context)} characters")
+    print(f"Number of sources: {len(sources)}")
+    print(f"User query: {last_message}")
+    print(f"Model: {configurable.ollama_model}")
 
     # Initialize Ollama chat client
     llm = ChatOllama(
@@ -82,6 +114,10 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     system_message_content = system_prompt_template.format(
         current_date=current_date, context=state.get("context", "")
     )
+
+    print(f"\n📤 System Message (first 1000 chars):")
+    print(f"{system_message_content[:1000]}...")
+    print(f"\nTotal system message length: {len(system_message_content)} characters")
 
     # Build message list using LangChain message types
     messages = [SystemMessage(content=system_message_content)]
@@ -103,10 +139,17 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
 
     # Call Ollama
     response = llm.invoke(messages)
+    answer_with_sources = {
+        "content": response.content,
+        "sources": sources
+    }
 
-    # Return the AI message with reasoning_content preserved in additional_kwargs
-    # The reasoning_content will be automatically streamed in additional_kwargs when streaming is enabled
-    return {"messages": [response]}
+    # Return ONLY the new AI message (add_messages reducer will append it to state)
+    # Use json.dumps() to create valid JSON string for frontend parsing
+    return {
+        **state,
+        "messages": [AIMessage(content=json.dumps(answer_with_sources))]
+    }
 
 
 # Create the simplified agent graph

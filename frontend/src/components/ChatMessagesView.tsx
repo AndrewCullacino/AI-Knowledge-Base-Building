@@ -12,6 +12,7 @@ import {
   ActivityTimeline,
   ProcessedEvent,
 } from "@/components/ActivityTimeline"; // Assuming ActivityTimeline is in the same dir or adjust path
+import { CitationRenderer } from "./CitationRenderer";
 
 // Markdown component props type from former ReportView
 type MdComponentProps = {
@@ -224,11 +225,7 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
           )}
         </div>
       )}
-      <ReactMarkdown components={mdComponents}>
-        {typeof message.content === "string"
-          ? message.content
-          : JSON.stringify(message.content)}
-      </ReactMarkdown>
+       <MessageDisplay message={message} />
       <Button
         variant="default"
         className={`cursor-pointer bg-neutral-700 border-neutral-600 text-neutral-300 self-end ${
@@ -258,6 +255,27 @@ interface ChatMessagesViewProps {
   onCancel: () => void;
   liveActivityEvents: ProcessedEvent[];
   historicalActivities: Record<string, ProcessedEvent[]>;
+}
+
+function MessageDisplay({ message }: { message: { content: string } }) {
+  let content = message.content;
+  let sources: any[] = [];  // Initialize to empty array to prevent crashes
+
+  try {
+    const parsed = JSON.parse(message.content);
+    if (parsed.content && parsed.sources) {
+      content = parsed.content;
+      sources = parsed.sources;
+    }
+  } catch {
+    // not JSON; leave as plain text
+  }
+
+  return (
+    <div className="message">
+      <CitationRenderer content={content} sources={sources} />
+    </div>
+  );
 }
 
 export function ChatMessagesView({
@@ -348,3 +366,5 @@ export function ChatMessagesView({
     </div>
   );
 }
+
+

@@ -1,0 +1,41 @@
+/* Inline citation links */
+.citation-link {
+  color: #2563eb;              /* Blue for visibility */
+  text-decoration: none;       /* No underline until hover */
+  margin: 0 1px;               /* Spacing around citation */
+  font-weight: 600;            /* Bold for emphasis */
+}
+
+.citation-link:hover {
+  text-decoration: underline;  /* Visual feedback */
+}
+
+/* Source list container */
+.sources-list {
+  margin-top: 16px;            /* Separation from main content */
+  padding: 12px;               /* Internal spacing */
+  background: #f3f4f6;         /* Light gray background */
+  border-radius: 8px;          /* Rounded corners */
+  font-size: 14px;             /* Slightly smaller than body text */
+}
+
+.sources-list h4 {
+  margin: 0 0 8px 0;           /* Spacing below heading */
+  font-size: 14px;             /* Match list font size */
+  color: #6b7280;              /* Muted color for secondary info */
+}
+
+.sources-list ol {
+  margin: 0;                   /* Reset default margin */
+  padding-left: 20px;          /* Indent for numbers */
+}
+
+.sources-list li {
+  margin-bottom: 4px;          /* Spacing between sources */
+}
+
+/* Optional file path */
+.source-path {
+  color: #9ca3af;              /* Lighter gray for tertiary info */
+  font-size: 12px;             /* Smaller than source title */
+}
