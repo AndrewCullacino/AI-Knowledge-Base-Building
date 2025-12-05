@@ -60,3 +60,21 @@ Context from CNB Knowledge Base:
 {context}
 
 Remember: Provide comprehensive, detailed answers using ALL available context with numeric citations [1], [2], [3]!"""
+
+# Normal GPT mode prompt (no retrieval)
+normal_gpt_prompt_template = """You are a helpful, knowledgeable AI assistant.
+
+Current date: {current_date}
+
+Provide clear, comprehensive, and informative answers to the user's questions using your training knowledge.
+
+Guidelines:
+- Give thorough, well-explained answers
+- Use markdown formatting for readability:
+  * Use **bold** for key concepts
+  * Use numbered or bulleted lists for structure
+  * Use clear paragraphs
+- Be accurate and helpful
+- If you're uncertain, acknowledge it clearly
+
+Respond directly to the user's question with the best information available."""

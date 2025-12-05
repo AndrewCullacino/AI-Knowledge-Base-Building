@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { ProcessedEvent } from "@/components/ActivityTimeline";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatMessagesView } from "@/components/ChatMessagesView";
+import { RepositorySelector } from "@/components/RepositorySelector";
 import { Button } from "@/components/ui/button";
 
 export default function App() {
@@ -16,6 +17,10 @@ export default function App() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const hasFinalizeEventOccurredRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Repository and RAG mode state
+  const [repository, setRepository] = useState<string>("cnb/docs");
+  const [ragEnabled, setRagEnabled] = useState<boolean>(true);
   const thread = useStream<{
     messages: Message[];
     initial_search_query_count: number;
@@ -115,12 +120,14 @@ export default function App() {
       ];
       thread.submit({
         messages: newMessages,
+        repository: repository,  // Pass repository to backend
+        rag_enabled: ragEnabled, // Pass RAG mode toggle
         initial_search_query_count: 3,
         max_research_loops: 3,
         reasoning_model: "gpt-4o-mini",
       });
     },
-    [thread]
+    [thread, repository, ragEnabled]
   );
 
   const handleCancel = useCallback(() => {
@@ -129,8 +136,17 @@ export default function App() {
   }, [thread]);
 
   return (
-    <div className="flex h-screen bg-neutral-800 text-neutral-100 font-sans antialiased">
-      <main className="h-full w-full max-w-4xl mx-auto">
+    <div className="flex h-screen bg-gray-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 font-sans antialiased transition-colors duration-200">
+      <main className="h-full w-full max-w-5xl mx-auto flex flex-col bg-white dark:bg-neutral-900 shadow-2xl border-x border-neutral-200 dark:border-neutral-800">
+        {/* Repository Selector - Always visible at top */}
+        <RepositorySelector
+          currentRepo={repository}
+          onRepoChange={setRepository}
+          ragEnabled={ragEnabled}
+          onRagToggle={setRagEnabled}
+        />
+
+        <div className="flex-1 overflow-hidden relative flex flex-col">
           {thread.messages.length === 0 ? (
             <WelcomeScreen
               handleSubmit={handleSubmit}
@@ -138,16 +154,21 @@ export default function App() {
               onCancel={handleCancel}
             />
           ) : error ? (
-            <div className="flex flex-col items-center justify-center h-full">
-              <div className="flex flex-col items-center justify-center gap-4">
-                <h1 className="text-2xl text-red-400 font-bold">Error</h1>
-                <p className="text-red-400">{JSON.stringify(error)}</p>
+            <div className="flex flex-col items-center justify-center h-full p-6">
+              <div className="flex flex-col items-center justify-center gap-6 max-w-md text-center p-8 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900">
+                <h2 className="text-2xl text-red-600 dark:text-red-400 font-bold">
+                  Connection Error
+                </h2>
+                <p className="text-neutral-600 dark:text-neutral-300 text-sm">
+                  {JSON.stringify(error)}
+                </p>
 
                 <Button
                   variant="destructive"
                   onClick={() => window.location.reload()}
+                  className="w-full"
                 >
-                  Retry
+                  Retry Connection
                 </Button>
               </div>
             </div>
@@ -162,6 +183,7 @@ export default function App() {
               historicalActivities={historicalActivities}
             />
           )}
+        </div>
       </main>
     </div>
   );

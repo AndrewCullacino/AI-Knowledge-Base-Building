@@ -11,7 +11,7 @@ from langchain_ollama import ChatOllama
 
 from agent.state import AgentState
 from agent.configuration import Configuration
-from agent.prompts import get_current_date, get_user_query, system_prompt_template
+from agent.prompts import get_current_date, get_user_query, system_prompt_template, normal_gpt_prompt_template
 from agent.cnb_utils import CNBKnowledgeBase
 from agent.cnb_retrieval import query_cnb_knowledge_base
 
@@ -90,12 +90,14 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     configurable = Configuration.from_runnable_config(config)
     context = state.get("context", "")
     sources = state.get("sources", [])
+    rag_enabled = state.get("rag_enabled", True)
     messages = state["messages"]
     last_message = messages[-1].content
 
     print(f"\n{'='*80}")
     print(f"🤖 GENERATE_ANSWER DEBUG")
     print(f"{'='*80}")
+    print(f"RAG Enabled: {rag_enabled}")
     print(f"Context length: {len(context)} characters")
     print(f"Number of sources: {len(sources)}")
     print(f"User query: {last_message}")
@@ -109,11 +111,17 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
         reasoning=configurable.ollama_reasoning,
     )
 
-    # Prepare messages for chat API
+    # Prepare messages for chat API - use appropriate prompt based on RAG mode
     current_date = get_current_date()
-    system_message_content = system_prompt_template.format(
-        current_date=current_date, context=state.get("context", "")
-    )
+    if rag_enabled:
+        system_message_content = system_prompt_template.format(
+            current_date=current_date, context=context
+        )
+    else:
+        # Normal GPT mode - no context needed
+        system_message_content = normal_gpt_prompt_template.format(
+            current_date=current_date
+        )
 
     print(f"\n📤 System Message (first 1000 chars):")
     print(f"{system_message_content[:1000]}...")
@@ -139,10 +147,20 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
 
     # Call Ollama
     response = llm.invoke(messages)
-    answer_with_sources = {
-        "content": response.content,
-        "sources": sources
-    }
+
+    # Format response based on mode
+    if rag_enabled:
+        # RAG mode: Include sources for citations
+        answer_with_sources = {
+            "content": response.content,
+            "sources": sources
+        }
+    else:
+        # Normal GPT mode: No sources, just content
+        answer_with_sources = {
+            "content": response.content,
+            "sources": []  # Empty sources for normal mode
+        }
 
     # Return ONLY the new AI message (add_messages reducer will append it to state)
     # Use json.dumps() to create valid JSON string for frontend parsing
@@ -152,6 +170,18 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     }
 
 
+# Conditional routing function
+def should_retrieve(state: AgentState) -> str:
+    """Determine if we should use RAG or skip to direct GPT answer."""
+    rag_enabled = state.get("rag_enabled", True)  # Default to True for backward compatibility
+
+    if rag_enabled:
+        print("🔍 RAG Mode: Retrieving from knowledge base...")
+        return "retrieve_knowledge"
+    else:
+        print("💬 GPT Mode: Direct answer without retrieval...")
+        return "generate_answer"
+
 # Create the simplified agent graph
 builder = StateGraph(AgentState, config_schema=Configuration)
 
@@ -159,8 +189,17 @@ builder = StateGraph(AgentState, config_schema=Configuration)
 builder.add_node("retrieve_knowledge", retrieve_knowledge)
 builder.add_node("generate_answer", generate_answer)
 
+# Define conditional edge from START
+builder.add_conditional_edges(
+    START,
+    should_retrieve,
+    {
+        "retrieve_knowledge": "retrieve_knowledge",
+        "generate_answer": "generate_answer"
+    }
+)
+
 # Define edges
-builder.add_edge(START, "retrieve_knowledge")
 builder.add_edge("retrieve_knowledge", "generate_answer")
 builder.add_edge("generate_answer", END)
 
