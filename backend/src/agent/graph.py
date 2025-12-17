@@ -182,26 +182,63 @@ def should_retrieve(state: AgentState) -> str:
         print("💬 GPT Mode: Direct answer without retrieval...")
         return "generate_answer"
 
-# Create the simplified agent graph
+
+def route_to_workflow(state: AgentState) -> str:
+    """Route to appropriate workflow based on mode selection.
+
+    Routes to:
+    - DeepResearch workflow if deep_research_mode=True
+    - Regular RAG workflow if rag_enabled=True
+    - Direct GPT if both disabled
+    """
+    deep_research_mode = state.get("deep_research_mode", False)
+    rag_enabled = state.get("rag_enabled", True)
+
+    if deep_research_mode:
+        print("🔬 DeepResearch Mode: Multi-round research workflow activated")
+        return "deep_research"
+    elif rag_enabled:
+        print("🔍 RAG Mode: Single retrieval workflow")
+        return "retrieve_knowledge"
+    else:
+        print("💬 GPT Mode: Direct answer without retrieval")
+        return "generate_answer"
+
+
+# Import DeepResearch graph
+from agent.deep_research_graph import deep_research_graph
+
+# Create the main unified agent graph
 builder = StateGraph(AgentState, config_schema=Configuration)
 
-# Define nodes
+# Define nodes for regular RAG workflow
 builder.add_node("retrieve_knowledge", retrieve_knowledge)
 builder.add_node("generate_answer", generate_answer)
 
-# Define conditional edge from START
+# Add DeepResearch as a subgraph node
+builder.add_node("deep_research", deep_research_graph)
+
+# Define conditional edge from START to route workflows
 builder.add_conditional_edges(
     START,
-    should_retrieve,
+    route_to_workflow,
     {
+        "deep_research": "deep_research",
         "retrieve_knowledge": "retrieve_knowledge",
         "generate_answer": "generate_answer"
     }
 )
 
-# Define edges
+# Define edges for regular RAG workflow
 builder.add_edge("retrieve_knowledge", "generate_answer")
-builder.add_edge("generate_answer", END)
 
-# Compile the graph
-graph = builder.compile(name="cnb-knowledge-agent")
+# Both regular and deep research end after their completion
+builder.add_edge("generate_answer", END)
+builder.add_edge("deep_research", END)
+
+# Compile the graph with streaming configuration to support subgraph updates
+graph = builder.compile(
+    name="cnb-knowledge-agent",
+    # Enable streaming of subgraph state updates
+    checkpointer=None,  # Optional: add checkpointer for state persistence
+)

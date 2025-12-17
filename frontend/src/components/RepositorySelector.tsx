@@ -6,6 +6,9 @@ interface RepositorySelectorProps {
   onRepoChange: (repo: string) => void;
   ragEnabled: boolean;
   onRagToggle: (enabled: boolean) => void;
+  deepResearchMode: boolean;
+  onDeepResearchToggle: (enabled: boolean) => void;
+  onManageKB?: () => void;
 }
 
 export function RepositorySelector({
@@ -13,6 +16,9 @@ export function RepositorySelector({
   onRepoChange,
   ragEnabled,
   onRagToggle,
+  deepResearchMode,
+  onDeepResearchToggle,
+  onManageKB,
 }: RepositorySelectorProps) {
   const [inputRepo, setInputRepo] = useState(currentRepo);
 
@@ -26,19 +32,46 @@ export function RepositorySelector({
   return (
     <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3">
       <div className="max-w-4xl mx-auto flex items-center gap-3 flex-wrap">
-        {/* RAG Mode Toggle */}
+        {/* Mode Selection */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Mode:
           </label>
-          <Button
-            variant={ragEnabled ? "default" : "outline"}
-            size="sm"
-            onClick={() => onRagToggle(!ragEnabled)}
-            className="min-w-[100px]"
-          >
-            {ragEnabled ? "📚 RAG" : "💬 GPT"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant={!ragEnabled ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                onRagToggle(false);
+                onDeepResearchToggle(false);
+              }}
+              className="min-w-[80px]"
+            >
+              💬 GPT
+            </Button>
+            <Button
+              variant={ragEnabled && !deepResearchMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                onRagToggle(true);
+                onDeepResearchToggle(false);
+              }}
+              className="min-w-[80px]"
+            >
+              📚 RAG
+            </Button>
+            <Button
+              variant={deepResearchMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                onRagToggle(true);
+                onDeepResearchToggle(true);
+              }}
+              className="min-w-[120px]"
+            >
+              🔬 DeepResearch
+            </Button>
+          </div>
         </div>
 
         {/* Repository Selector - Only show when RAG is enabled */}
@@ -63,13 +96,22 @@ export function RepositorySelector({
               <Button type="submit" size="sm" variant="secondary">
                 Switch
               </Button>
+              {onManageKB && (
+                <Button type="button" size="sm" variant="outline" onClick={onManageKB}>
+                  📁 Manage
+                </Button>
+              )}
             </form>
           </>
         )}
 
         {/* Current Status */}
         <div className="text-xs text-neutral-500 dark:text-neutral-400 ml-auto">
-          {ragEnabled ? `Using: ${currentRepo}` : "Direct GPT Mode"}
+          {deepResearchMode
+            ? `🔬 DeepResearch: ${currentRepo}`
+            : ragEnabled
+            ? `📚 RAG: ${currentRepo}`
+            : "💬 Direct GPT Mode"}
         </div>
       </div>
     </div>

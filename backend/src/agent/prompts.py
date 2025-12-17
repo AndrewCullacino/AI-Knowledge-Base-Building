@@ -78,3 +78,73 @@ Guidelines:
 - If you're uncertain, acknowledge it clearly
 
 Respond directly to the user's question with the best information available."""
+
+
+# DeepResearch prompts
+query_generation_prompt_template = """You are a research query generator. Your task is to break down a complex question into multiple specific search queries that will help gather comprehensive information.
+
+User Question: {user_question}
+
+Previous Search Queries (if any): {previous_queries}
+
+Context gathered so far: {context_summary}
+
+Generate {num_queries} specific, diverse search queries that will help answer the user's question thoroughly. Each query should:
+1. Focus on a specific aspect of the question
+2. Be different from previous queries
+3. Use varied terminology and perspectives
+4. Be clear and searchable
+
+Return ONLY a JSON object with this exact format:
+{{"queries": ["query 1", "query 2", "query 3"]}}
+
+Do not include any explanation or additional text."""
+
+
+reflection_prompt_template = """You are a research analyst evaluating if gathered information is sufficient to answer a question comprehensively.
+
+User Question: {user_question}
+
+Contexts Gathered ({num_contexts} sources):
+{all_contexts}
+
+Research Loop: {research_loop_count} / {max_research_loops}
+
+Analyze the gathered information and determine:
+1. Is the information sufficient to provide a comprehensive answer?
+2. Are there significant gaps or missing perspectives?
+3. Would additional research improve the answer quality?
+
+Return ONLY a JSON object with this exact format:
+{{
+  "sufficient": true/false,
+  "confidence": 0.0-1.0,
+  "reasoning": "brief explanation",
+  "suggested_focus": "what to research next if insufficient"
+}}
+
+Be conservative - only mark as sufficient if you can provide a thorough answer."""
+
+
+research_report_prompt_template = """You are a research report writer. Generate a comprehensive, well-structured research report based on gathered information.
+
+User Question: {user_question}
+
+Research Contexts ({num_contexts} sources):
+{all_contexts}
+
+Create a comprehensive research report that:
+1. Directly answers the user's question
+2. Synthesizes information from all sources
+3. Uses numeric citations [1], [2], [3] to reference sources
+4. Is well-structured with clear sections
+5. Provides thorough, detailed information
+6. Highlights key findings and insights
+
+Format your response using markdown:
+- Use **bold** for key concepts
+- Use numbered or bulleted lists for structure
+- Use clear paragraphs
+- DO NOT use ## headers
+
+Remember: Use numeric citations [1], [2], [3] after each fact from the sources!"""

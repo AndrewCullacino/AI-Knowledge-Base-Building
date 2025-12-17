@@ -51,15 +51,26 @@ class Configuration(BaseModel):
     )
 
     ollama_reasoning: bool = Field(
-        default=True,
+        default=False,  # Changed from True to False to prevent timeouts
         metadata={
-            "description": "Enable reasoning mode for Ollama. When True, reasoning content is captured separately in additional_kwargs."
+            "description": "Enable reasoning mode for Ollama. WARNING: Reasoning mode can cause timeouts (60+ seconds) in DeepResearch final report generation. Disabled by default for reliability."
         },
     )
 
     top_k_results: int = Field(
         default=5,
         metadata={"description": "Number of knowledge base results to retrieve."},
+    )
+
+    # DeepResearch configuration
+    max_research_loops: int = Field(
+        default=3,
+        metadata={"description": "Maximum number of research iterations in DeepResearch mode."},
+    )
+
+    queries_per_iteration: int = Field(
+        default=3,
+        metadata={"description": "Number of search queries to generate per research iteration."},
     )
 
     @classmethod
