@@ -71,10 +71,10 @@ export function KnowledgeBaseUpload({ onUploadComplete }: KnowledgeBaseUploadPro
   return (
     <Card className="p-4 space-y-4">
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+        <h3 className="text-lg font-semibold text-foreground">
           📁 Upload Knowledge Base
         </h3>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+        <p className="text-sm text-muted-foreground">
           Upload documents to create your custom knowledge base. Supported formats: PDF, TXT, MD, DOCX
         </p>
       </div>
@@ -87,14 +87,14 @@ export function KnowledgeBaseUpload({ onUploadComplete }: KnowledgeBaseUploadPro
           multiple
           accept=".pdf,.txt,.md,.docx,.doc"
           onChange={handleFileSelect}
-          className="flex-1 text-sm text-neutral-700 dark:text-neutral-300
+          className="flex-1 text-sm text-foreground
             file:mr-4 file:py-2 file:px-4
             file:rounded-md file:border-0
             file:text-sm file:font-semibold
-            file:bg-blue-50 file:text-blue-700
-            hover:file:bg-blue-100
-            dark:file:bg-blue-900 dark:file:text-blue-100
-            dark:hover:file:bg-blue-800"
+            file:bg-primary/10 file:text-primary
+            hover:file:bg-primary/20
+            dark:file:bg-primary/20 dark:file:text-primary
+            dark:hover:file:bg-primary/30"
         />
         <Button
           onClick={handleUpload}

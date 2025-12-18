@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface RepositorySelectorProps {
   currentRepo: string;
@@ -21,6 +22,7 @@ export function RepositorySelector({
   onManageKB,
 }: RepositorySelectorProps) {
   const [inputRepo, setInputRepo] = useState(currentRepo);
+  const { theme, toggleTheme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,88 +32,120 @@ export function RepositorySelector({
   };
 
   return (
-    <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3">
-      <div className="max-w-4xl mx-auto flex items-center gap-3 flex-wrap">
-        {/* Mode Selection */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+    <div className="glass-light border-b border-border p-4">
+      <div className="max-w-7xl mx-auto flex items-center gap-3 justify-between">
+        {/* Left section: Mode Selection */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <label className="text-sm font-medium text-foreground whitespace-nowrap">
             Mode:
           </label>
-          <div className="flex gap-2">
-            <Button
-              variant={!ragEnabled ? "default" : "outline"}
-              size="sm"
+          <div className="inline-flex bg-muted rounded-xl p-1 gap-1 border border-border">
+            <button
               onClick={() => {
                 onRagToggle(false);
                 onDeepResearchToggle(false);
               }}
-              className="min-w-[80px]"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                !ragEnabled
+                  ? 'bg-background text-foreground shadow-md border border-border'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+              }`}
+              aria-pressed={!ragEnabled}
             >
               💬 GPT
-            </Button>
-            <Button
-              variant={ragEnabled && !deepResearchMode ? "default" : "outline"}
-              size="sm"
+            </button>
+            <button
               onClick={() => {
                 onRagToggle(true);
                 onDeepResearchToggle(false);
               }}
-              className="min-w-[80px]"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                ragEnabled && !deepResearchMode
+                  ? 'bg-background text-foreground shadow-md border border-border'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+              }`}
+              aria-pressed={ragEnabled && !deepResearchMode}
             >
               📚 RAG
-            </Button>
-            <Button
-              variant={deepResearchMode ? "default" : "outline"}
-              size="sm"
+            </button>
+            <button
               onClick={() => {
                 onRagToggle(true);
                 onDeepResearchToggle(true);
               }}
-              className="min-w-[120px]"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                deepResearchMode
+                  ? 'bg-background text-foreground shadow-md border border-border'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+              }`}
+              aria-pressed={deepResearchMode}
             >
               🔬 DeepResearch
-            </Button>
+            </button>
           </div>
         </div>
 
-        {/* Repository Selector - Only show when RAG is enabled */}
+        {/* Middle section: Repository Selector - Only show when RAG is enabled */}
         {ragEnabled && (
-          <>
-            <div className="h-6 w-px bg-neutral-300 dark:bg-neutral-700" />
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-1 min-w-[300px]">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="h-8 w-px bg-border flex-shrink-0" />
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-1 min-w-0 max-w-xl">
               <label
                 htmlFor="repo-input"
-                className="text-sm font-medium text-neutral-700 dark:text-neutral-300 whitespace-nowrap"
+                className="text-sm font-medium text-foreground whitespace-nowrap flex-shrink-0"
               >
-                Knowledge Base:
+                KB:
               </label>
               <input
                 id="repo-input"
                 type="text"
                 value={inputRepo}
                 onChange={(e) => setInputRepo(e.target.value)}
-                placeholder="e.g., cnb/docs or your/repo"
-                className="flex-1 px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                placeholder="cnb/docs"
+                className="flex-1 min-w-0 px-3 py-2 text-sm border border-neutral-200 dark:border-white/10 rounded-lg bg-white dark:bg-white/5 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
-              <Button type="submit" size="sm" variant="secondary">
+              <Button
+                type="submit"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200 flex-shrink-0"
+              >
                 Switch
               </Button>
               {onManageKB && (
-                <Button type="button" size="sm" variant="outline" onClick={onManageKB}>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={onManageKB}
+                  className="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-all duration-200 flex-shrink-0 border border-neutral-200 dark:border-white/10"
+                >
                   📁 Manage
                 </Button>
               )}
             </form>
-          </>
+          </div>
         )}
 
-        {/* Current Status */}
-        <div className="text-xs text-neutral-500 dark:text-neutral-400 ml-auto">
-          {deepResearchMode
-            ? `🔬 DeepResearch: ${currentRepo}`
-            : ragEnabled
-            ? `📚 RAG: ${currentRepo}`
-            : "💬 Direct GPT Mode"}
+        {/* Right section: Theme Toggle + Status */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-all duration-200 border border-neutral-200 dark:border-white/10"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+
+          {/* Current Status - Hidden on small screens */}
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap hidden lg:block">
+            {deepResearchMode
+              ? `🔬 ${currentRepo}`
+              : ragEnabled
+              ? `📚 ${currentRepo}`
+              : "💬 Direct GPT"}
+          </div>
         </div>
       </div>
     </div>

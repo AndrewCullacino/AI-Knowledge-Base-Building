@@ -73,6 +73,28 @@ class Configuration(BaseModel):
         metadata={"description": "Number of search queries to generate per research iteration."},
     )
 
+    # Multiple models configuration for different tasks (Optional Bonus Feature)
+    query_generation_model: str = Field(
+        default="qwen3:8b",
+        metadata={
+            "description": "Model to use for query generation. Lightweight model recommended for speed (e.g., qwen3:8b, llama3:8b)."
+        },
+    )
+
+    reflection_model: str = Field(
+        default="qwen3:8b",
+        metadata={
+            "description": "Model to use for reflection and analysis. More capable model recommended (e.g., qwen3:14b, llama3:70b)."
+        },
+    )
+
+    report_generation_model: str = Field(
+        default="qwen3:8b",
+        metadata={
+            "description": "Model to use for final report generation. Most capable model recommended for quality (e.g., qwen3:14b, llama3:70b)."
+        },
+    )
+
     @classmethod
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None

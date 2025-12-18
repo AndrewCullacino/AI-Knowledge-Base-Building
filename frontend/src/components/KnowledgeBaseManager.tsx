@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { KnowledgeBaseUpload } from "./KnowledgeBaseUpload";
+import { logger } from "@/utils/logger";
 
 interface KnowledgeBase {
   id: string;
@@ -34,7 +35,7 @@ export function KnowledgeBaseManager({ currentKB, onSelectKB }: KnowledgeBaseMan
         setKnowledgeBases(data.knowledge_bases || []);
       }
     } catch (error) {
-      console.error("Failed to load knowledge bases:", error);
+      logger.error("Failed to load knowledge bases:", error);
     } finally {
       setLoading(false);
     }
@@ -62,20 +63,29 @@ export function KnowledgeBaseManager({ currentKB, onSelectKB }: KnowledgeBaseMan
         }
       }
     } catch (error) {
-      console.error("Failed to delete knowledge base:", error);
+      logger.error("Failed to delete knowledge base:", error);
     }
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">
-          Knowledge Bases
-        </h2>
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground mb-1">
+            Knowledge Bases
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your custom knowledge bases
+          </p>
+        </div>
         <Button
           onClick={() => setShowUpload(!showUpload)}
-          variant={showUpload ? "outline" : "default"}
+          className={`transition-all duration-200 ${
+            showUpload
+              ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+          }`}
           size="sm"
         >
           {showUpload ? "Cancel" : "+ New Knowledge Base"}
@@ -84,71 +94,88 @@ export function KnowledgeBaseManager({ currentKB, onSelectKB }: KnowledgeBaseMan
 
       {/* Upload Form */}
       {showUpload && (
-        <KnowledgeBaseUpload onUploadComplete={handleUploadComplete} />
+        <div className="glass rounded-xl p-4 border border-border animate-fadeInUpSmooth">
+          <KnowledgeBaseUpload onUploadComplete={handleUploadComplete} />
+        </div>
       )}
 
       {/* Knowledge Bases List */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {loading ? (
-          <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
-            Loading knowledge bases...
+          <div className="text-center py-12">
+            <div className="inline-block w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <p className="text-neutral-400">Loading knowledge bases...</p>
           </div>
         ) : (
           <>
             {/* Default CNB Knowledge Base */}
             <Card
-              className={`p-4 cursor-pointer transition-all ${
+              className={`glass cursor-pointer transition-all duration-200 border ${
                 currentKB === "cnb/docs"
-                  ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                  : "hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                  ? "ring-2 ring-blue-500 border-blue-500/50 bg-blue-500/10"
+                  : "border-white/10 hover:bg-white/5 hover:border-white/20"
               }`}
               onClick={() => onSelectKB("cnb/docs")}
             >
-              <div className="flex items-center justify-between">
+              <div className="p-5 flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
-                    📚 CNB Official Docs
-                  </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Default knowledge base (cnb/docs)
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl">📚</span>
+                    <h3 className="font-semibold text-white text-lg">
+                      CNB Official Docs
+                    </h3>
+                  </div>
+                  <p className="text-sm text-neutral-400">
+                    Default knowledge base • Always available
                   </p>
                 </div>
                 {currentKB === "cnb/docs" && (
-                  <span className="text-blue-600 dark:text-blue-400 font-medium">✓ Active</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 rounded-lg border border-blue-500/30">
+                    <span className="text-blue-400">✓</span>
+                    <span className="text-blue-400 font-medium text-sm">Active</span>
+                  </div>
                 )}
               </div>
             </Card>
 
             {/* Custom Knowledge Bases */}
-            {knowledgeBases.map((kb) => (
+            {knowledgeBases.map((kb, index) => (
               <Card
                 key={kb.id}
-                className={`p-4 cursor-pointer transition-all ${
+                className={`glass cursor-pointer transition-all duration-200 border animate-fadeInUp ${
                   currentKB === kb.id
-                    ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                    : "hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                    ? "ring-2 ring-blue-500 border-blue-500/50 bg-blue-500/10"
+                    : "border-white/10 hover:bg-white/5 hover:border-white/20"
                 }`}
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex items-center justify-between">
+                <div className="p-5 flex items-center justify-between">
                   <div className="flex-1" onClick={() => onSelectKB(kb.id)}>
-                    <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
-                      📁 {kb.name}
-                    </h3>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-2xl">📁</span>
+                      <h3 className="font-semibold text-white text-lg">
+                        {kb.name}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-neutral-400">
                       {kb.document_count} documents • Created {new Date(kb.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {currentKB === kb.id && (
-                      <span className="text-blue-600 dark:text-blue-400 font-medium">✓ Active</span>
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 rounded-lg border border-blue-500/30">
+                        <span className="text-blue-400">✓</span>
+                        <span className="text-blue-400 font-medium text-sm">Active</span>
+                      </div>
                     )}
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDelete(kb.id);
                       }}
+                      className="text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-all duration-200"
                     >
                       Delete
                     </Button>
@@ -158,8 +185,14 @@ export function KnowledgeBaseManager({ currentKB, onSelectKB }: KnowledgeBaseMan
             ))}
 
             {knowledgeBases.length === 0 && !loading && (
-              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
-                No custom knowledge bases yet. Click "+ New Knowledge Base" to create one.
+              <div className="text-center py-12 glass rounded-xl border border-white/10">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+                  <span className="text-3xl">📦</span>
+                </div>
+                <p className="text-neutral-400 mb-2">No custom knowledge bases yet</p>
+                <p className="text-sm text-neutral-500">
+                  Click "+ New Knowledge Base" to create your first one
+                </p>
               </div>
             )}
           </>

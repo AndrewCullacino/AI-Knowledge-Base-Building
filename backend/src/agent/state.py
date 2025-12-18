@@ -16,6 +16,7 @@ class AgentState(TypedDict):
     Attributes:
         messages: Conversation history
         repository: Knowledge base (e.g. cnb/docs) - optional, defaults to cnb/docs
+        knowledge_base_type: Type of KB - "cnb", "wikipedia", or "custom"
         rag_enabled: Toggle RAG vs normal GPT mode - optional, defaults to True
         sources: Retrieved document metadata for citations
 
@@ -31,6 +32,7 @@ class AgentState(TypedDict):
 
     messages: Annotated[list, add_messages]
     repository: NotRequired[str]
+    knowledge_base_type: NotRequired[str]  # "cnb", "wikipedia", or "custom"
     rag_enabled: NotRequired[bool]
     sources: NotRequired[List[Dict]]
 
@@ -42,3 +44,9 @@ class AgentState(TypedDict):
     reflection_result: NotRequired[Dict]
     step_status: NotRequired[str]
     deep_research_mode: NotRequired[bool]
+
+    # DeepResearch event data for frontend streaming
+    generate_queries: NotRequired[Dict]  # Query generation event data
+    retrieve_contexts: NotRequired[Dict]  # Retrieval event data
+    reflect: NotRequired[Dict]  # Reflection event data
+    finalize_report: NotRequired[Dict]  # Report generation event data

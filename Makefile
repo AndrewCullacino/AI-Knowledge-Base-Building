@@ -12,7 +12,7 @@ dev-frontend:
 
 dev-backend:
 	@echo "Starting backend development server..."
-	@cd backend && ../.venv/bin/langgraph dev
+	@cd backend && ../.venv/bin/langgraph dev --allow-blocking
 
 # Run frontend and backend concurrently
 dev:

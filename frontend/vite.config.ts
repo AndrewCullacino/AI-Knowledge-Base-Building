@@ -13,14 +13,17 @@ export default defineConfig({
     },
   },
   server: {
-    host: "127.0.0.1", // 添加这一行，使用 127.0.0.1 而不是 localhost
+    host: "127.0.0.1",
     proxy: {
       // Proxy API requests to the backend server
       "/api": {
-        target: "http://127.0.0.1:8000", // Default backend address
+        target: "http://127.0.0.1:2024",
         changeOrigin: true,
-        // Optionally rewrite path if needed (e.g., remove /api prefix if backend doesn't expect it)
-        // rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      // Proxy LangGraph threads API requests
+      "/threads": {
+        target: "http://127.0.0.1:2024",
+        changeOrigin: true,
       },
     },
   },

@@ -39,61 +39,64 @@ export const InputForm: React.FC<InputFormProps> = ({
   return (
     <form
       onSubmit={handleInternalSubmit}
-      className={`flex flex-col gap-2 p-3 pb-4`}
+      className="flex flex-col gap-3 p-4 bg-secondary/50 rounded-2xl border border-border/50"
     >
-      <div
-        className={`flex flex-row items-center justify-between text-white rounded-3xl rounded-bl-sm ${
-          hasHistory ? "rounded-br-sm" : ""
-        } break-words min-h-7 bg-neutral-700 px-4 pt-3 `}
-      >
-        <Textarea
-          value={internalInputValue}
-          onChange={(e) => setInternalInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask me anything"
-          className={`w-full text-neutral-100 placeholder-neutral-500 resize-none border-0 focus:outline-none focus:ring-0 outline-none focus-visible:ring-0 shadow-none
-                        md:text-base  min-h-[56px] max-h-[200px]`}
-          rows={1}
-        />
-        <div className="-mt-3">
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-muted-foreground font-medium ml-1">
+          How can I help you today?
+        </label>
+        <div className="flex flex-row items-start gap-3">
+          <Textarea
+            value={internalInputValue}
+            onChange={(e) => setInternalInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask anything..."
+            className="w-full text-foreground placeholder-muted-foreground/50 resize-none border-0 focus:outline-none focus:ring-0 outline-none focus-visible:ring-0 shadow-none bg-transparent text-base min-h-[48px] max-h-[200px] leading-relaxed p-0"
+            rows={1}
+            aria-label="Message input"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center gap-2">
+           <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg h-8 w-8"
+           >
+             <span className="text-lg">+</span>
+           </Button>
+        </div>
+        <div className="flex-shrink-0">
           {isLoading ? (
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2 cursor-pointer rounded-full transition-all duration-200"
+              className="text-destructive hover:text-destructive/80 hover:bg-destructive/20 rounded-lg transition-all duration-200 h-8 w-8"
               onClick={onCancel}
+              aria-label="Stop generation"
             >
               <StopCircle className="h-5 w-5" />
             </Button>
           ) : (
             <Button
               type="submit"
-              variant="ghost"
-              className={`${
+              size="icon"
+              className={`rounded-lg transition-all duration-200 h-8 w-8 ${
                 isSubmitDisabled
-                  ? "text-neutral-500"
-                  : "text-blue-500 hover:text-blue-400 hover:bg-blue-500/10"
-              } p-2 cursor-pointer rounded-full transition-all duration-200 text-base`}
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
+                  : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+              }`}
               disabled={isSubmitDisabled}
+              aria-label="Send message"
             >
-              Search
-              <Send className="h-5 w-5" />
+              <Send className="h-4 w-4" />
             </Button>
           )}
         </div>
-      </div>
-      <div className="flex items-center justify-end">
-        {hasHistory && (
-          <Button
-            className="bg-neutral-700 border-neutral-600 text-neutral-300 cursor-pointer rounded-xl rounded-t-sm pl-2 "
-            variant="default"
-            onClick={() => window.location.reload()}
-          >
-            <SquarePen size={16} />
-            New Search
-          </Button>
-        )}
       </div>
     </form>
   );

@@ -13,7 +13,7 @@ from agent.state import AgentState
 from agent.configuration import Configuration
 from agent.prompts import get_current_date, get_user_query, system_prompt_template, normal_gpt_prompt_template
 from agent.cnb_utils import CNBKnowledgeBase
-from agent.cnb_retrieval import query_cnb_knowledge_base
+from agent.kb_router import route_knowledge_base_query
 
 load_dotenv()
 
@@ -33,6 +33,7 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
 
     messages = state["messages"]
     repo = state.get("repository", "cnb/docs")
+    kb_type = state.get("knowledge_base_type", "cnb")  # NEW: Get KB type
 
     # Get last user message
     last_message = messages[-1].content if messages else ""
@@ -43,13 +44,15 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     print(f"\n{'='*80}")
     print(f"🔍 RETRIEVE_KNOWLEDGE DEBUG")
     print(f"{'='*80}")
+    print(f"Knowledge Base Type: {kb_type}")  # NEW: Log KB type
     print(f"Repository: {repo}")
     print(f"Query: {last_message}")
     print(f"Top K: 10")
 
-    # Query the knowledge base
-    result = query_cnb_knowledge_base(
+    # Query the knowledge base using router
+    result = route_knowledge_base_query(
         query=last_message,
+        kb_type=kb_type,
         repository=repo,
         top_k=10
     )
@@ -92,6 +95,11 @@ def generate_answer(state: AgentState, config: RunnableConfig) -> AgentState:
     sources = state.get("sources", [])
     rag_enabled = state.get("rag_enabled", True)
     messages = state["messages"]
+
+    # Handle empty messages list (e.g., from LangSmith Studio initialization)
+    if not messages:
+        return {**state}
+
     last_message = messages[-1].content
 
     print(f"\n{'='*80}")
@@ -205,8 +213,16 @@ def route_to_workflow(state: AgentState) -> str:
         return "generate_answer"
 
 
-# Import DeepResearch graph
-from agent.deep_research_graph import deep_research_graph
+# Import DeepResearch nodes (flattened for proper streaming)
+from agent.deep_research_graph import (
+    initialize_research,
+    generate_research_queries,
+    retrieve_multi_contexts,
+    reflect_on_research,
+    finalize_research_report,
+    increment_loop_counter,
+    should_continue_research
+)
 
 # Create the main unified agent graph
 builder = StateGraph(AgentState, config_schema=Configuration)
@@ -215,15 +231,20 @@ builder = StateGraph(AgentState, config_schema=Configuration)
 builder.add_node("retrieve_knowledge", retrieve_knowledge)
 builder.add_node("generate_answer", generate_answer)
 
-# Add DeepResearch as a subgraph node
-builder.add_node("deep_research", deep_research_graph)
+# Add DeepResearch nodes directly (flattened for streaming support)
+builder.add_node("initialize_research", initialize_research)
+builder.add_node("generate_queries", generate_research_queries)
+builder.add_node("retrieve_contexts", retrieve_multi_contexts)
+builder.add_node("reflect", reflect_on_research)
+builder.add_node("finalize_report", finalize_research_report)
+builder.add_node("increment_counter", increment_loop_counter)
 
 # Define conditional edge from START to route workflows
 builder.add_conditional_edges(
     START,
     route_to_workflow,
     {
-        "deep_research": "deep_research",
+        "deep_research": "initialize_research",  # Start DeepResearch flow
         "retrieve_knowledge": "retrieve_knowledge",
         "generate_answer": "generate_answer"
     }
@@ -231,14 +252,35 @@ builder.add_conditional_edges(
 
 # Define edges for regular RAG workflow
 builder.add_edge("retrieve_knowledge", "generate_answer")
-
-# Both regular and deep research end after their completion
 builder.add_edge("generate_answer", END)
-builder.add_edge("deep_research", END)
 
-# Compile the graph with streaming configuration to support subgraph updates
+# Define edges for DeepResearch workflow (flattened)
+builder.add_edge("initialize_research", "generate_queries")
+builder.add_edge("generate_queries", "retrieve_contexts")
+builder.add_edge("retrieve_contexts", "reflect")
+
+# Conditional edge after reflection
+builder.add_conditional_edges(
+    "reflect",
+    should_continue_research,
+    {
+        "generate_queries": "increment_counter",
+        "finalize_report": "finalize_report",
+    }
+)
+
+# Loop back to generate more queries
+builder.add_edge("increment_counter", "generate_queries")
+
+# End after finalizing research report
+builder.add_edge("finalize_report", END)
+
+# Compile the unified graph with all workflows flattened
+# IMPORTANT: DeepResearch nodes are now part of main graph (not subgraph)
+# This ensures all state updates stream properly to frontend
 graph = builder.compile(
     name="cnb-knowledge-agent",
-    # Enable streaming of subgraph state updates
     checkpointer=None,  # Optional: add checkpointer for state persistence
+    # Note: stream_mode is set via API call, not here
+    # Frontend uses: ["custom", "updates", "values", "messages-tuple"]
 )

@@ -2,8 +2,11 @@
 import pathlib
 from fastapi import FastAPI, Response, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
+from starlette.staticfiles import StaticFiles
+from typing import List, Dict, Any
+from pydantic import BaseModel
 from agent.kb_manager import kb_manager
+from agent.conversation_manager import conversation_manager
 import uuid
 
 # Define the FastAPI app
@@ -12,7 +15,11 @@ app = FastAPI()
 # Add CORS middleware to allow frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://smith.langchain.com",  # Allow LangSmith Studio
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -93,6 +100,110 @@ async def delete_knowledge_base(kb_id: str):
     try:
         kb_manager.delete_knowledge_base(kb_id)
         return {"status": "success", "message": f"Knowledge base '{kb_id}' deleted"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Conversation API Endpoints
+
+class CreateConversationRequest(BaseModel):
+    kb_type: str = "wikipedia"
+    mode: str = "gpt"
+
+
+class AddMessageRequest(BaseModel):
+    type: str  # "human" or "ai"
+    content: Any  # Can be string or dict
+    metadata: Dict[str, Any] = {}
+
+
+class UpdateTitleRequest(BaseModel):
+    title: str
+
+
+@app.post("/api/conversations")
+async def create_conversation(request: CreateConversationRequest):
+    """Create a new conversation."""
+    try:
+        conversation = conversation_manager.create_conversation(
+            kb_type=request.kb_type, mode=request.mode
+        )
+        return {"status": "success", "conversation": conversation}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/conversations")
+async def list_conversations():
+    """List all conversations."""
+    try:
+        conversations = conversation_manager.list_conversations()
+        return {"conversations": conversations}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/conversations/{conv_id}")
+async def get_conversation(conv_id: str):
+    """Get a conversation with all messages."""
+    try:
+        conversation = conversation_manager.get_conversation(conv_id)
+        return conversation
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/conversations/{conv_id}")
+async def delete_conversation(conv_id: str):
+    """Delete a conversation."""
+    try:
+        conversation_manager.delete_conversation(conv_id)
+        return {"status": "success", "message": f"Conversation '{conv_id}' deleted"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/conversations/{conv_id}")
+async def update_conversation_title(conv_id: str, request: UpdateTitleRequest):
+    """Update conversation title."""
+    try:
+        conversation = conversation_manager.update_title(conv_id, request.title)
+        return {"status": "success", "conversation": conversation}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/conversations/{conv_id}/messages")
+async def add_message(conv_id: str, request: AddMessageRequest):
+    """Add a message to a conversation."""
+    try:
+        message = {
+            "type": request.type,
+            "content": request.content,
+            **request.metadata,
+        }
+        conversation = conversation_manager.add_message(conv_id, message)
+        return {"status": "success", "conversation": conversation}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/conversations/{conv_id}/messages")
+async def get_messages(conv_id: str):
+    """Get all messages for a conversation."""
+    try:
+        messages = conversation_manager.get_messages(conv_id)
+        return {"messages": messages}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
