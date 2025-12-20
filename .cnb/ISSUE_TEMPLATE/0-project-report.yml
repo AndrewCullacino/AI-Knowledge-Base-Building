@@ -317,7 +317,7 @@ body:
            - 切换历史对话
            - 删除对话
 
-        📹 **视频链接**: [请在此处上传视频或提供视频链接]
+        📹 **视频链接**: https://www.bilibili.com/video/BV17xqrBTE1r/?spm_id_from=333.1387.upload.video_card.click&vd_source=10b19242b93aea1bc527fd57b942b93a
 
       render: markdown
     validations:

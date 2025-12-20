@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
 interface KnowledgeBaseUploadProps {
-  onUploadComplete: (kbId: string) => void;
+  onUploadComplete: (kbId: string, kbName: string) => void;  // Fix 2: Updated signature
 }
 
 export function KnowledgeBaseUpload({ onUploadComplete }: KnowledgeBaseUploadProps) {
@@ -49,8 +49,8 @@ export function KnowledgeBaseUpload({ onUploadComplete }: KnowledgeBaseUploadPro
       const result = await response.json();
       setProgress(100);
 
-      // Notify parent component
-      onUploadComplete(result.kb_id);
+      // Notify parent component with both ID and name (Fix 2)
+      onUploadComplete(result.kb_id, result.kb_name || result.kb_id);
 
       // Reset form
       setSelectedFiles([]);

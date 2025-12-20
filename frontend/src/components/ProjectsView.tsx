@@ -16,9 +16,10 @@ interface ProjectsViewProps {
   currentKB: string;
   onSelectKB: (kbId: string) => void;
   onBackToChat: () => void;
+  onUploadComplete: (kbId: string, kbName: string) => void;  // Fix 6: NEW prop
 }
 
-export function ProjectsView({ currentKB, onSelectKB, onBackToChat }: ProjectsViewProps) {
+export function ProjectsView({ currentKB, onSelectKB, onBackToChat, onUploadComplete }: ProjectsViewProps) {
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
@@ -44,10 +45,10 @@ export function ProjectsView({ currentKB, onSelectKB, onBackToChat }: ProjectsVi
     }
   };
 
-  const handleUploadComplete = (kbId: string) => {
+  const handleUploadComplete = (kbId: string, kbName: string) => {
     setShowUpload(false);
     loadKnowledgeBases();
-    onSelectKB(kbId);
+    onUploadComplete(kbId, kbName);  // Fix 6: Pass both to parent
   };
 
   const handleDelete = async (kbId: string) => {

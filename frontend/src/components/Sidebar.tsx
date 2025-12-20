@@ -38,6 +38,8 @@ interface SidebarProps {
   onSelectConversation: (convId: string) => void;
   onDeleteConversation: (convId: string) => void;
   conversationsLoading: boolean;
+  onSelectCustomKB: (kbId: string, kbName: string) => void;  // Fix 3: NEW prop
+  activeKBName: string;  // Fix 3: NEW prop
 }
 
 export function Sidebar({
@@ -57,6 +59,8 @@ export function Sidebar({
   onSelectConversation,
   onDeleteConversation,
   conversationsLoading,
+  onSelectCustomKB,  // Fix 3: NEW prop
+  activeKBName,      // Fix 3: NEW prop
 }: SidebarProps) {
   const { theme, toggleTheme } = useTheme();
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([]);
@@ -273,7 +277,10 @@ export function Sidebar({
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 px-3">Knowledge Source</p>
           <div className="space-y-1">
             <button
-              onClick={() => onKnowledgeBaseTypeChange("wikipedia")}
+              onClick={() => {
+                onKnowledgeBaseTypeChange("wikipedia");
+                onSelectCustomKB("", "Wikipedia");  // Update active KB name
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 knowledgeBaseType === "wikipedia"
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -290,7 +297,10 @@ export function Sidebar({
               )}
             </button>
             <button
-              onClick={() => onKnowledgeBaseTypeChange("cnb")}
+              onClick={() => {
+                onKnowledgeBaseTypeChange("cnb");
+                onSelectCustomKB("cnb/docs", "CNB Docs");  // Update active KB name
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 knowledgeBaseType === "cnb"
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -313,6 +323,12 @@ export function Sidebar({
       {/* Knowledge Bases / Projects Section */}
       {ragEnabled && (
         <div className="flex-1 overflow-hidden flex flex-col px-3">
+          {/* Fix 5: Active KB Indicator */}
+          <div className="px-3 py-2 mb-2 bg-sidebar-accent/30 border-l-2 border-primary rounded-r">
+            <p className="text-xs text-muted-foreground">Active Knowledge Base</p>
+            <p className="text-sm font-medium text-primary truncate">{activeKBName}</p>
+          </div>
+
           <button
             onClick={() => setProjectsExpanded(!projectsExpanded)}
             className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground uppercase tracking-wider hover:text-sidebar-foreground transition-colors"
@@ -364,11 +380,13 @@ export function Sidebar({
                         onRagToggle(false);
                         onDeepResearchToggle(false);
                       } else {
-                        onSelectKB(kb.id);
+                        // Fix 3: Set type to "custom" and call custom KB handler
+                        onKnowledgeBaseTypeChange("custom");
+                        onSelectCustomKB(kb.id, kb.name);
                       }
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors group cursor-pointer ${
-                      currentKB === kb.id
+                      knowledgeBaseType === "custom" && currentKB === kb.id
                         ? "bg-sidebar-primary/10 text-sidebar-primary border border-sidebar-primary/30"
                         : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                     }`}
@@ -383,8 +401,8 @@ export function Sidebar({
                         <Trash2 className="h-3 w-3" />
                       </div>
                     </div>
-                    {currentKB === kb.id && (
-                      <span className="text-xs text-sidebar-primary">✓</span>
+                    {knowledgeBaseType === "custom" && currentKB === kb.id && (
+                      <span className="text-xs text-sidebar-primary">● Active</span>
                     )}
                   </div>
                 ))}

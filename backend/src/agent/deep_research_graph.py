@@ -168,6 +168,7 @@ def retrieve_multi_contexts(state: AgentState, config: RunnableConfig) -> AgentS
     queries = state.get("research_queries", [])
     repo = state.get("repository", "cnb/docs")
     kb_type = state.get("knowledge_base_type", "cnb")  # NEW: Get KB type
+    custom_kb_id = state.get("custom_kb_id")  # NEW: Get custom KB ID
     all_contexts = state.get("all_contexts", [])
     loop_count = state.get("research_loop_count", 0)
 
@@ -212,6 +213,7 @@ def retrieve_multi_contexts(state: AgentState, config: RunnableConfig) -> AgentS
             query=query,
             kb_type=kb_type,
             repository=repo,
+            custom_kb_id=custom_kb_id,  # NEW: Pass custom KB ID for routing
             top_k=5,  # 5 results per query
         )
 

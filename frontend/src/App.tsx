@@ -34,6 +34,10 @@ export default function App() {
   const [deepResearchMode, setDeepResearchMode] = useState<boolean>(false);
   const [showProjectsView, setShowProjectsView] = useState<boolean>(false);
 
+  // Custom KB state (Fix 1)
+  const [selectedCustomKBId, setSelectedCustomKBId] = useState<string | null>(null);
+  const [activeKBName, setActiveKBName] = useState<string>("Wikipedia");
+
   // Conversation state
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
@@ -554,6 +558,15 @@ export default function App() {
       // Save human message to conversation
       await saveMessagesToConversation(convId, [humanMessage]);
 
+      // Build configurable object with custom KB ID (Fix 1)
+      const configurable = {
+        knowledge_base_type: knowledgeBaseType,
+        repository: repository,
+        custom_kb_id: selectedCustomKBId,  // NEW: Pass custom KB ID
+        deep_research_mode: deepResearchMode,
+        rag_enabled: ragEnabled,
+      };
+
       thread.submit(
         {
           messages: newMessages,
@@ -564,6 +577,7 @@ export default function App() {
           max_research_loops: 3,
           initial_search_query_count: 3,
           reasoning_model: "gpt-4o-mini",
+          custom_kb_id: selectedCustomKBId,  // NEW: Include custom KB ID
         },
         {
           streamMode: ["custom", "debug", "updates", "values", "messages-tuple"],
@@ -602,6 +616,12 @@ export default function App() {
         onSelectConversation={loadConversation}
         onDeleteConversation={deleteConversation}
         conversationsLoading={conversationsLoading}
+        onSelectCustomKB={(kbId, kbName) => {
+          setSelectedCustomKBId(kbId);
+          setRepository(kbId);
+          setActiveKBName(kbName);
+        }}
+        activeKBName={activeKBName}
       />
 
       {/* Main Content */}
@@ -611,6 +631,12 @@ export default function App() {
             currentKB={repository}
             onSelectKB={setRepository}
             onBackToChat={() => setShowProjectsView(false)}
+            onUploadComplete={(kbId, kbName) => {
+              setKnowledgeBaseType("custom");
+              setSelectedCustomKBId(kbId);
+              setRepository(kbId);
+              setActiveKBName(kbName);
+            }}
           />
         ) : (
           <div className="flex-1 overflow-hidden relative flex flex-col max-w-4xl mx-auto w-full">

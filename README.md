@@ -230,6 +230,18 @@ project-1-knowledge-base/
 
 ---
 
+## 🎬 演示视频
+
+📹 **视频演示**: [智能知识库问答系统完整演示](https://www.bilibili.com/video/BV17xqrBTE1r/?spm_id_from=333.1387.upload.video_card.click&vd_source=10b19242b93aea1bc527fd57b942b93a)
+
+视频内容包含:
+- ✅ 知识库切换演示 (CNB / Wikipedia)
+- ✅ 引用来源功能展示
+- ✅ DeepResearch 深度研究工作流
+- ✅ 对话历史管理
+
+---
+
 ## 📚 参考资料
 
 - [LangGraph 官方文档](https://docs.langchain.com/oss/python/langgraph/overview)

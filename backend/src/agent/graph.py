@@ -75,6 +75,7 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     messages = state["messages"]
     repo = state.get("repository", "cnb/docs")
     kb_type = state.get("knowledge_base_type", "cnb")  # NEW: Get KB type
+    custom_kb_id = state.get("custom_kb_id")  # NEW: Get custom KB ID
 
     # Get last user message
     last_message = messages[-1].content if messages else ""
@@ -90,6 +91,7 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     print(f"{'='*80}")
     print(f"Knowledge Base Type: {kb_type}")  # NEW: Log KB type
     print(f"Repository: {repo}")
+    print(f"Custom KB ID: {custom_kb_id}")  # NEW: Log custom KB ID
     print(f"Original Query: {last_message}")
     print(f"Search Keywords: {search_query}")
     print(f"Top K: 10")
@@ -99,6 +101,7 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
         query=search_query,
         kb_type=kb_type,
         repository=repo,
+        custom_kb_id=custom_kb_id,  # NEW: Pass custom KB ID
         top_k=10
     )
 
