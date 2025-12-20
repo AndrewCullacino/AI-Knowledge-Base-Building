@@ -7,59 +7,359 @@ body:
     attributes:
       value: |
         ## 📚 Open Camp 知识库项目作业提交
-        
-        请按照要求填写以下信息，提交后等待老师阅读并评测。
-        
+
+        请按照要求填写以下信息,提交后等待老师阅读并评测。
+
   - type: input
     id: repo-url
     attributes:
       label: 📦 作业仓库地址
       description: 请提供你的 CNB 仓库完整 URL
-      placeholder: https://cnb.cool/your-org/your-repo
+      placeholder: https://cnb.cool/stage1_basic/Andrew-project1
     validations:
       required: true
-      
+
   - type: textarea
     id: project-description
     attributes:
       label: 📝 项目说明
-      description: 请说明你的仓库做了什么功能，以及如何使用知识库
+      description: 请详细说明你的仓库实现了哪些功能
       placeholder: |
-        ### 功能说明
-        我的仓库结合知识库实现了...
-        
-        ### 特色功能
-        - 功能1
-        - 功能2
+        ### 项目概述
+        本项目基于 LangGraph + CNB 知识库 API,实现了一个智能知识问答系统。
+
+        ### 核心技术栈
+        - **前端**: React + TypeScript + Vite
+        - **后端**: Python + LangGraph + LangChain + FastAPI
+        - **大模型**: Ollama (本地运行)
+        - **知识库**: CNB Knowledge Base API + Wikipedia API
+        - **数据库**: PostgreSQL + Redis
+        - **容器化**: Docker Compose
+
+        ### 已实现的场景功能
+
+        #### 场景 1: 增强对话功能 ⭐⭐
+        ✅ **知识库切换**
+        - 支持在 CNB 知识库和 Wikipedia 之间切换
+        - 通过侧边栏下拉菜单选择不同的知识库类型
+        - 动态路由到不同的检索后端 (CNB API / Wikipedia API)
+
+        ✅ **引用来源角标展示**
+        - 答案中显示带编号的引用来源 `[1]` `[2]` 等
+        - 点击角标可跳转到对应的原始文档页面
+        - 每个引用包含文档标题、URL、路径等元数据
+
+        ✅ **多种对话模式**
+        - RAG 模式: 基于知识库的增强检索生成
+        - GPT 模式: 直接使用大模型对话(不检索知识库)
+        - DeepResearch 模式: 深度研究工作流
+
+        #### 场景 2: DeepResearch 深度研究 ⭐⭐⭐
+        ✅ **多轮检索和推理**
+        - 自动拆解用户问题,生成多个搜索查询
+        - 迭代式检索: 查询 → 检索 → 反思 → 再查询
+        - 最多支持 3 轮研究迭代(可配置)
+
+        ✅ **结构化输出研究报告**
+        - 综合多轮检索结果,生成全面的研究报告
+        - 包含多个信息源的整合分析
+        - 结构化的 Markdown 格式输出
+
+        ✅ **实时流式输出**
+        - 实时显示研究进度和中间结果
+        - 流式传输最终答案,提升用户体验
+
+        ✅ **显示当前步骤** (加分项)
+        - 活动时间线显示研究进度:
+          - "Generating Search Queries" - 生成搜索查询
+          - "Knowledge Base Search" - 检索知识库
+          - "Reflection" - 评估研究质量
+          - "Generating Answer" - 生成最终答案
+        - 实时更新每个步骤的状态和数据
+
+        ✅ **不同模型做不同事情** (加分项)
+        - Query 生成: 使用轻量级模型(快速生成查询)
+        - Reflection 反思: 使用中等能力模型(分析研究质量)
+        - Report 生成: 使用最强大模型(生成高质量报告)
+        - 配置文件支持自定义每个阶段使用的模型
+
+        ✅ **引用来源和溯源能力** (加分项)
+        - DeepResearch 报告包含所有引用来源
+        - 每个来源显示 URL、标题、路径等元数据
+        - 支持点击跳转到原始文档
+
+        ### 额外功能特性
+
+        ✅ **对话历史管理**
+        - 完整的会话持久化系统
+        - 支持创建、切换、删除多个对话
+        - 自动保存对话历史到本地文件
+        - 会话列表显示标题、消息数量、创建时间
+
+        ✅ **智能关键词提取**
+        - 自动从用户问题中提取核心关键词
+        - 优化检索查询,提高检索准确率
+        - 去除冗余的疑问词和填充词
+
+        ✅ **现代化 UI/UX**
+        - 响应式设计,适配不同屏幕尺寸
+        - 流畅的动画效果和过渡
+        - 暗色主题,降低视觉疲劳
+        - 智能滚动控制,自动跟随新消息
+
+        ### 技术亮点
+
+        🔹 **LangGraph 工作流编排**
+        - 主工作流图统一管理 3 种模式(RAG/GPT/DeepResearch)
+        - 条件路由自动选择正确的执行路径
+        - DeepResearch 子工作流实现多轮迭代逻辑
+        - 支持流式更新和状态持久化
+
+        🔹 **知识库路由系统**
+        - 统一的 `kb_router` 接口,支持多种知识库后端
+        - 目前支持: CNB Knowledge Base、Wikipedia
+        - 易于扩展新的知识库类型
+        - 自动处理不同 API 的响应格式差异
+
+        🔹 **事件驱动的前端更新**
+        - 使用 LangGraph SDK 的自定义事件机制
+        - 实时监听后端工作流的各个步骤
+        - 解析 `deep_research_step` 事件更新 UI
+        - 支持调试模式查看完整的状态变化
+
+        🔹 **Docker 一键部署**
+        - 完整的 Docker Compose 配置
+        - 包含 Redis、PostgreSQL、LangGraph API
+        - 支持 GPU 加速的 Ollama 模型
+        - 环境变量管理,易于配置
+
+        ### 项目结构
+
+        ```
+        project-1-knowledge-base/
+        ├── backend/                    # Python 后端
+        │   ├── src/agent/
+        │   │   ├── graph.py           # 主工作流图(统一路由)
+        │   │   ├── deep_research_graph.py  # 深度研究工作流
+        │   │   ├── kb_router.py       # 知识库路由器
+        │   │   ├── cnb_retrieval.py   # CNB API 集成
+        │   │   ├── wikipedia_retrieval.py  # Wikipedia 检索
+        │   │   ├── conversation_manager.py # 会话管理
+        │   │   ├── state.py           # 状态定义
+        │   │   ├── configuration.py   # 配置管理
+        │   │   └── prompts.py         # Prompt 模板
+        │   ├── pyproject.toml         # Python 依赖
+        │   └── tests/                 # 单元测试
+        ├── frontend/                   # React 前端
+        │   ├── src/
+        │   │   ├── App.tsx            # 主应用组件
+        │   │   ├── components/        # UI 组件
+        │   │   │   ├── ChatMessagesView.tsx    # 消息视图
+        │   │   │   ├── ActivityTimeline.tsx    # 活动时间线
+        │   │   │   ├── InputForm.tsx           # 输入表单
+        │   │   │   └── Sidebar.tsx             # 侧边栏
+        │   │   ├── hooks/             # React Hooks
+        │   │   └── types/             # TypeScript 类型
+        │   ├── package.json           # Node.js 依赖
+        │   └── vite.config.ts         # Vite 配置
+        ├── docker-compose.yml         # Docker Compose 配置
+        ├── Dockerfile                 # Docker 镜像构建
+        ├── Makefile                   # 开发命令
+        └── README.md                  # 项目文档
+        ```
+
+        ### 部署和使用
+
+        #### 方式一: Docker Compose (推荐)
+
+        ```bash
+        # 1. 设置环境变量
+        export LANGSMITH_API_KEY=your_langsmith_api_key
+        export CNB_TOKEN=your_cnb_token  # 可选
+
+        # 2. 启动所有服务
+        docker compose up
+
+        # 3. 访问应用
+        # 本地: http://localhost:8123/app/
+        # CNB 云端: https://xxx-8123.cnb.run/app/
+        ```
+
+        #### 方式二: 本地开发
+
+        ```bash
+        # 1. 安装后端依赖
+        cd backend
+        pip install .
+
+        # 2. 安装前端依赖
+        cd frontend
+        npm install
+
+        # 3. 启动开发服务器
+        make dev  # 或分别启动 langgraph dev 和 npm run dev
+
+        # 4. 访问应用
+        # 前端: http://localhost:5173/app
+        # 后端 API: http://localhost:2024
+        ```
+
+        ### 环境变量配置
+
+        ```bash
+        # 必需
+        LANGSMITH_API_KEY=xxx          # LangSmith API Key (追踪和调试)
+
+        # 可选
+        CNB_TOKEN=xxx                  # CNB 知识库访问令牌
+        OLLAMA_BASE_URL=http://localhost:11434  # Ollama 服务地址
+        ```
+
+        ### 使用说明
+
+        1. **选择知识库类型**
+           - 打开侧边栏
+           - 在 "Knowledge Base Type" 下拉菜单中选择:
+             - `CNB Knowledge Base` - 使用 CNB 官方文档
+             - `Wikipedia` - 使用维基百科
+
+        2. **选择对话模式**
+           - `RAG Mode` - 基于知识库的增强检索(默认)
+           - `GPT Mode` - 直接使用大模型对话
+           - `DeepResearch Mode` - 多轮深度研究
+
+        3. **发起对话**
+           - 在输入框中输入你的问题
+           - 系统会自动检索相关内容并生成答案
+           - 答案中的 `[1]` `[2]` 等角标可点击查看来源
+
+        4. **查看研究过程** (DeepResearch 模式)
+           - 活动时间线显示每个研究步骤
+           - 可以看到生成的查询、检索结果、反思过程
+           - 最终生成综合研究报告
+
+        5. **管理对话历史**
+           - 点击 "New Chat" 创建新对话
+           - 在侧边栏点击历史对话可切换
+           - 长按对话可删除
+
+        ### 测试建议
+
+        **测试问题示例**:
+
+        1. **简单 RAG 查询**
+           - "What is LangGraph?"
+           - "How to use CNB knowledge base?"
+
+        2. **DeepResearch 深度研究**
+           - "What are the best practices for building RAG applications?"
+           - "Compare different approaches to implementing knowledge bases"
+
+        3. **跨知识库查询**
+           - 切换到 Wikipedia: "What is artificial intelligence?"
+           - 切换回 CNB: "How to deploy applications on CNB?"
+
+        ### 性能指标
+
+        - **RAG 模式响应时间**: 约 3-5 秒
+        - **DeepResearch 模式**: 约 20-40 秒(3 轮迭代)
+        - **知识库检索准确率**: 基于关键词提取优化
+        - **支持并发对话**: 通过 Redis/PostgreSQL 持久化
+
+        ### 已知限制
+
+        1. DeepResearch 模式需要较长时间(20-40秒),适合复杂问题
+        2. 需要本地运行 Ollama 模型(或配置远程 API)
+        3. CNB 知识库需要有效的 CNB_TOKEN(可选,用于私有仓库)
+
+        ### 未来改进方向
+
+        - [ ] 支持更多知识库类型(Google Scholar, arXiv)
+        - [ ] 添加语音对话功能(Whisper STT + TTS)
+        - [ ] 优化 DeepResearch 速度(并行检索、缓存)
+        - [ ] 添加用户认证和权限管理
+        - [ ] 支持多语言界面(中英文切换)
+
+        ### 参考资料
+
+        - [LangGraph 官方文档](https://docs.langchain.com/oss/python/langgraph/overview)
+        - [CNB 知识库 API 文档](https://docs.cnb.cool/zh/ai/knowledge-base.html)
+        - [DeepResearch 示例](https://academy.langchain.com/courses/deep-research-with-langgraph)
+
       render: markdown
     validations:
       required: true
-      
+
   - type: textarea
     id: video-demo
     attributes:
       label: 🎬 演示视频
-      description: 请提供演示视频链接（请确保同样已在你的仓库 README 中贴上该视频）
+      description: 请提供演示视频链接(请确保同样已在你的仓库 README 中贴上该视频)
       placeholder: |
-        上传视频到这里
+        ### 演示视频说明
+
+        视频内容包含:
+        1. **知识库切换演示** (0:00-0:30)
+           - 切换 CNB 和 Wikipedia 知识库
+           - 对比不同知识库的检索结果
+
+        2. **引用来源功能** (0:30-1:00)
+           - 显示答案中的引用角标
+           - 点击跳转到原始文档
+
+        3. **DeepResearch 深度研究** (1:00-2:30)
+           - 发起复杂问题查询
+           - 展示活动时间线的各个步骤
+           - 显示最终研究报告
+
+        4. **对话历史管理** (2:30-3:00)
+           - 创建新对话
+           - 切换历史对话
+           - 删除对话
+
+        📹 **视频链接**: [请在此处上传视频或提供视频链接]
+
       render: markdown
     validations:
       required: true
-      
+
   - type: checkboxes
     id: readme-checklist
     attributes:
       label: ✅ README 检查清单
       description: 请确认你的仓库 README 中已包含以下内容
       options:
-        - label: 已在 README 已经说明了作业的仓库是做了哪个场景的功能、以及贴上演示视频
+        - label: 已在 README 中说明了作业实现了哪些场景功能(场景1、场景2等)
           required: true
-        - label: 已在 README 中写清楚如何使用仓库、如何启动、需要前置配置什么等
+        - label: 已在 README 中贴上演示视频
           required: true
-     
+        - label: 已在 README 中写清楚如何启动项目(Docker Compose 或本地开发)
+          required: true
+        - label: 已在 README 中说明需要配置的环境变量(LANGSMITH_API_KEY等)
+          required: true
+        - label: 已在 README 中提供使用说明(如何切换知识库、如何使用 DeepResearch)
+          required: true
+        - label: 代码有必要的注释,核心功能有文档说明
+          required: true
+
   - type: markdown
     attributes:
       value: |
         ---
-        
-        提交后请耐心等待老师阅读并评测。祝你顺利通过！🎉
+
+        ## 📊 评分标准参考
+
+        ### 基础功能 (60%)
+        - ✅ 场景 1: 知识库切换 + 引用来源 (30%)
+        - ✅ 场景 2: DeepResearch 基础功能 (30%)
+
+        ### 加分项 (40%)
+        - ✅ DeepResearch 显示当前步骤 (+10%)
+        - ✅ 不同模型做不同事情 (+10%)
+        - ✅ 引用来源和溯源能力 (+10%)
+        - ✅ 对话历史管理 (+5%)
+        - ✅ 代码质量和文档 (+5%)
+
+        ---
+
+        提交后请耐心等待老师阅读并评测。祝你顺利通过!🎉
