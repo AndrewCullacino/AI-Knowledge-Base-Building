@@ -304,6 +304,7 @@ project-1-knowledge-base/
 ├── docker-compose.yml               # Docker Compose 配置
 ├── Dockerfile                       # Docker 镜像构建文件
 ├── Makefile                         # 开发命令快捷方式
+├── setup-dev.sh                     # 🚀 一键开发环境设置脚本
 ├── README.md                        # 项目文档 (本文件)
 └── .cnb/ISSUE_TEMPLATE/            # CNB 作业提交模板
     └── 0-project-report.yml
@@ -312,6 +313,8 @@ project-1-knowledge-base/
 ---
 
 ## 🚀 快速开始
+
+> 🎯 **开发者快速通道**: 克隆仓库后，直接运行 `./setup-dev.sh` 即可一键配置开发环境！详见 [方式二: 本地开发](#方式二-本地开发)
 
 ### 方式一: Docker Compose (推荐)
 
@@ -376,6 +379,8 @@ https://xxx-8123.cnb.run/app/
 
 适合进行开发和调试，可以实时查看代码变更。
 
+> 💡 **快速提示**: 使用 `./setup-dev.sh` 脚本可以一键安装所有依赖，跳过手动配置步骤！
+
 #### 1. 前置要求
 
 - **Node.js 18+** 和 npm
@@ -417,16 +422,40 @@ OLLAMA_BASE_URL=http://localhost:11434
 
 #### 4. 安装依赖
 
-**后端:**
+**方式 A: 一键设置 (推荐) 🚀**
+
+使用快速设置脚本自动安装所有依赖:
+
 ```bash
-cd backend
-pip install .
+# 在项目根目录运行
+./setup-dev.sh
 ```
 
-**前端:**
+这个脚本会自动:
+- ✅ 安装前端依赖 (支持使用缓存加速)
+- ✅ 创建 Python 虚拟环境
+- ✅ 安装后端依赖
+- ✅ 启动 Ollama 服务
+- ⏱️ 预计耗时: 首次 2-3 分钟，使用缓存 30 秒
+
+**方式 B: 手动安装**
+
+如果需要手动安装，可以分别执行:
+
 ```bash
+# 创建 Python 虚拟环境
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 后端依赖
+cd backend
+pip install .
+cd ..
+
+# 前端依赖
 cd frontend
-npm install
+npm install --legacy-peer-deps
+cd ..
 ```
 
 #### 5. 启动开发服务器
