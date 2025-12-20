@@ -72,7 +72,7 @@ COPY backend/pyproject.toml /tmp/backend/
 # 预安装前端依赖
 RUN cd /tmp/frontend && npm install --legacy-peer-deps
 
-# 预安装后端依赖
+# 预安装后端依赖（已优化，移除了重依赖）
 RUN cd /tmp/backend && pip install --no-cache-dir \
     langgraph>=0.2.6 \
     langchain>=0.3.19 \
@@ -80,5 +80,4 @@ RUN cd /tmp/backend && pip install --no-cache-dir \
     python-dotenv>=1.0.1 \
     langgraph-sdk>=0.1.57 \
     fastapi \
-    requests>=2.31.0 \
-    python-multipart>=0.0.20
+    requests>=2.31.0
