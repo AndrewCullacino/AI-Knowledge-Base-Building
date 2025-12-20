@@ -18,8 +18,22 @@ $:
       stages:
         - name: start ollama
           script: nohup ollama serve >/dev/null 2>&1 &
-        - name: install frontend dependencies
-          script: cd frontend && npm install
-        - name: install backend dependencies
-          script: cd backend && pip install .
+        - name: setup dependencies (parallel)
+          script: |
+            # 并行安装前端和后端依赖以加快速度
+            (
+              if [ -d /tmp/frontend/node_modules ]; then
+                echo "📦 Linking frontend dependencies..."
+                cd frontend && ln -sf /tmp/frontend/node_modules node_modules 2>/dev/null || npm install --prefer-offline --no-audit
+              else
+                echo "📦 Installing frontend dependencies..."
+                cd frontend && npm install --prefer-offline --no-audit
+              fi
+            ) &
+            (
+              echo "🐍 Installing backend dependencies..."
+              cd backend && pip install . --no-deps 2>/dev/null || pip install .
+            ) &
+            wait
+            echo "✅ Dependencies ready!"
         

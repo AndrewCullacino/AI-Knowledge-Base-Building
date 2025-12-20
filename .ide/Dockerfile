@@ -63,3 +63,22 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 ENV OLLAMA_MODELS=/workspace/models
 ENV OLLAMA_HOST=0.0.0.0
 ENV OLLAMA_ORIGINS=*
+
+# 预装项目依赖（优化启动速度）
+# 复制 package.json 和 pyproject.toml 以利用 Docker 缓存
+COPY frontend/package*.json /tmp/frontend/
+COPY backend/pyproject.toml /tmp/backend/
+
+# 预安装前端依赖
+RUN cd /tmp/frontend && npm install --legacy-peer-deps
+
+# 预安装后端依赖
+RUN cd /tmp/backend && pip install --no-cache-dir \
+    langgraph>=0.2.6 \
+    langchain>=0.3.19 \
+    langchain-ollama>=0.3.0 \
+    python-dotenv>=1.0.1 \
+    langgraph-sdk>=0.1.57 \
+    fastapi \
+    requests>=2.31.0 \
+    python-multipart>=0.0.20
