@@ -19,6 +19,47 @@ load_dotenv()
 
 
 # Nodes
+def extract_search_keywords(query: str) -> str:
+    """Extract core keywords from a question by removing filler words.
+
+    Converts questions like "What is love?" to "love" for better search results.
+
+    Args:
+        query: User's question or query
+
+    Returns:
+        Optimized search query with core keywords
+    """
+    import re
+
+    # Remove question words and filler phrases
+    question_words = [
+        r'\bwhat\s+is\b', r'\bwhat\s+are\b', r'\bwhat\s+does\b',
+        r'\bhow\s+to\b', r'\bhow\s+does\b', r'\bhow\s+do\b', r'\bhow\s+can\b',
+        r'\bwhy\s+is\b', r'\bwhy\s+does\b', r'\bwhy\s+do\b',
+        r'\bwhen\s+is\b', r'\bwhen\s+does\b', r'\bwhen\s+do\b',
+        r'\bwhere\s+is\b', r'\bwhere\s+does\b', r'\bwhere\s+do\b',
+        r'\bwho\s+is\b', r'\bwho\s+are\b', r'\bwho\s+does\b',
+        r'\bwhich\s+is\b', r'\bwhich\s+are\b',
+        r'\bcan\s+you\b', r'\bcould\s+you\b', r'\bwould\s+you\b',
+        r'\btell\s+me\s+about\b', r'\bexplain\b', r'\bdescribe\b'
+    ]
+
+    cleaned = query.lower()
+    for pattern in question_words:
+        cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE)
+
+    # Remove extra whitespace and punctuation
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    cleaned = re.sub(r'[?!.,;]+$', '', cleaned).strip()
+
+    # If cleaning removed everything or left very little, return original
+    if len(cleaned) < 2:
+        return query
+
+    return cleaned
+
+
 def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     """Retrieve relevant context from CNB knowledge base.
 
@@ -38,6 +79,9 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     # Get last user message
     last_message = messages[-1].content if messages else ""
 
+    # Extract core keywords for better search results
+    search_query = extract_search_keywords(last_message)
+
     # Extract user query from messages
     user_query = get_user_query(state["messages"])
 
@@ -46,12 +90,13 @@ def retrieve_knowledge(state: AgentState, config: RunnableConfig) -> AgentState:
     print(f"{'='*80}")
     print(f"Knowledge Base Type: {kb_type}")  # NEW: Log KB type
     print(f"Repository: {repo}")
-    print(f"Query: {last_message}")
+    print(f"Original Query: {last_message}")
+    print(f"Search Keywords: {search_query}")
     print(f"Top K: 10")
 
-    # Query the knowledge base using router
+    # Query the knowledge base using router with optimized keywords
     result = route_knowledge_base_query(
-        query=last_message,
+        query=search_query,
         kb_type=kb_type,
         repository=repo,
         top_k=10

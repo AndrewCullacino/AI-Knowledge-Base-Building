@@ -236,10 +236,32 @@ def retrieve_multi_contexts(state: AgentState, config: RunnableConfig) -> AgentS
     # Combine with previous contexts
     combined_contexts = all_contexts + new_contexts
 
+    # Extract keywords from sources (domain names, source identifiers)
+    keywords = []
+    for source in all_sources[:5]:  # Get top 5 sources
+        url = source.get("url", "")
+        if url:
+            # Extract domain or identifier from URL
+            # Example: https://revolgy.com/blog -> revolgy
+            # Example: https://blog.google/technology -> googleblog
+            try:
+                from urllib.parse import urlparse
+                domain = urlparse(url).netloc
+                # Remove common prefixes/suffixes
+                domain = domain.replace("www.", "").replace(".com", "").replace(".org", "").replace(".net", "")
+                # Take first part if subdomain exists
+                parts = domain.split(".")
+                keyword = parts[0] if parts else domain
+                if keyword and keyword not in keywords:
+                    keywords.append(keyword)
+            except:
+                pass
+
     print(f"\n📊 Retrieval Summary:")
     print(f"  - New contexts: {len(new_contexts)}")
     print(f"  - Total contexts: {len(combined_contexts)}")
     print(f"  - Unique sources: {len(all_sources)}")
+    print(f"  - Keywords: {keywords}")
     print(f"{'='*80}\n")
 
     # Emit custom event for frontend - retrieval complete
@@ -251,6 +273,7 @@ def retrieve_multi_contexts(state: AgentState, config: RunnableConfig) -> AgentS
             "new_contexts": len(new_contexts),
             "total_contexts": len(combined_contexts),
             "sources_count": len(all_sources),
+            "keywords": keywords[:3],  # Send top 3 keywords
         },
         config=config,
     )
@@ -265,6 +288,8 @@ def retrieve_multi_contexts(state: AgentState, config: RunnableConfig) -> AgentS
             "num_contexts": len(combined_contexts),
             "new_contexts": len(new_contexts),
             "loop_count": loop_count,
+            "sources_count": len(all_sources),  # Add source count
+            "keywords": keywords[:3],  # Add keywords (top 3)
         }
     }
 
@@ -292,10 +317,16 @@ def reflect_on_research(state: AgentState, config: RunnableConfig) -> AgentState
     print(f"Contexts gathered: {len(all_contexts)}")
     print(f"Loop: {loop_count}/{max_loops}")
 
+    # Debug: Show average context length
+    avg_context_length = sum(len(ctx['content']) for ctx in all_contexts) / len(all_contexts) if all_contexts else 0
+    print(f"Average context length: {avg_context_length:.0f} characters")
+
     # Prepare context summary for reflection
+    # Increased from 300 to 1000 chars to give LLM more information for reflection
+    # Use first 15 contexts (up from 10) to ensure comprehensive analysis
     context_text = "\n\n".join([
-        f"Context {i+1} (from query: '{ctx['query']}'):\n{ctx['content'][:300]}..."
-        for i, ctx in enumerate(all_contexts[:10])  # Limit to first 10 for prompt
+        f"Context {i+1} (from query: '{ctx['query']}'):\n{ctx['content'][:1000]}..."
+        for i, ctx in enumerate(all_contexts[:15])  # Show more contexts for better evaluation
     ])
 
     print(f"⏳ Analyzing research quality...")
@@ -352,6 +383,10 @@ def reflect_on_research(state: AgentState, config: RunnableConfig) -> AgentState
     print(f"  - Confidence: {reflection.get('confidence', 0.0):.2f}")
     print(f"  - Reasoning: {reflection.get('reasoning', 'N/A')}")
     print(f"  - Suggested Focus: {reflection.get('suggested_focus', 'N/A')}")
+
+    # Debug: Show how much context was provided to reflection
+    context_chars_sent = len(context_text)
+    print(f"  - Context sent to LLM: {context_chars_sent:,} characters ({len(all_contexts[:15])} contexts)")
     print(f"{'='*80}\n")
 
     # Emit custom event for frontend - reflection complete

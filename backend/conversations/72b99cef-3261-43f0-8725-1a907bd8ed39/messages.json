@@ -1,0 +1,16 @@
+{
+  "messages": [
+    {
+      "type": "human",
+      "content": "What is the latest Gemini model?\n",
+      "id": "852e51fb-39f7-4f1c-846e-fbbb3c5b05a1",
+      "timestamp": "2025-12-20T07:11:18.679587"
+    },
+    {
+      "type": "ai",
+      "content": "{\"content\": \"Research completed with 21 contexts from 6 sources.\\n\\nNote: Full report generation encountered an error. Please try again or reduce research depth.\", \"sources\": [{\"title\": \"Gemini (language model)\", \"url\": \"https://en.wikipedia.org/wiki/Gemini_(language_model)\", \"source\": \"wikipedia\", \"page_id\": 74637995}, {\"title\": \"Google Gemini\", \"url\": \"https://en.wikipedia.org/wiki/Google_Gemini\", \"source\": \"wikipedia\", \"page_id\": 73363598}, {\"title\": \"Samsung Galaxy S24\", \"url\": \"https://en.wikipedia.org/wiki/Samsung_Galaxy_S24\", \"source\": \"wikipedia\", \"page_id\": 75775022}, {\"title\": \"Mistral AI\", \"url\": \"https://en.wikipedia.org/wiki/Mistral_AI\", \"source\": \"wikipedia\", \"page_id\": 75544367}, {\"title\": \"Apple Intelligence\", \"url\": \"https://en.wikipedia.org/wiki/Apple_Intelligence\", \"source\": \"wikipedia\", \"page_id\": 77125117}, {\"title\": \"Artificial intelligence\", \"url\": \"https://en.wikipedia.org/wiki/Artificial_intelligence\", \"source\": \"wikipedia\", \"page_id\": 1164}]}",
+      "id": "bf1a4c96-2751-4968-80dc-b0c455a52dba",
+      "timestamp": "2025-12-20T07:13:10.566391"
+    }
+  ]
+}

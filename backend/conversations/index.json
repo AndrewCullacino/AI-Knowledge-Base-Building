@@ -35,6 +35,69 @@
       "message_count": 0,
       "kb_type": "wikipedia",
       "mode": "rag"
+    },
+    "a10d29b4-38a4-4863-a08f-ca0c66e98c34": {
+      "id": "a10d29b4-38a4-4863-a08f-ca0c66e98c34",
+      "title": "What is love",
+      "created_at": "2025-12-20T06:52:42.111093",
+      "updated_at": "2025-12-20T07:35:09.703107",
+      "message_count": 4,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "ee18b22c-2c5e-411c-b05d-4f04cf87f25f": {
+      "id": "ee18b22c-2c5e-411c-b05d-4f04cf87f25f",
+      "title": "what is love",
+      "created_at": "2025-12-20T06:54:44.458080",
+      "updated_at": "2025-12-20T06:56:01.105933",
+      "message_count": 2,
+      "kb_type": "wikipedia",
+      "mode": "rag"
+    },
+    "72b99cef-3261-43f0-8725-1a907bd8ed39": {
+      "id": "72b99cef-3261-43f0-8725-1a907bd8ed39",
+      "title": "What is the latest Gemini model?",
+      "created_at": "2025-12-20T07:10:41.428993",
+      "updated_at": "2025-12-20T07:13:10.566641",
+      "message_count": 2,
+      "kb_type": "wikipedia",
+      "mode": "rag"
+    },
+    "79c762fe-3373-405b-9a1f-265f766e9aa2": {
+      "id": "79c762fe-3373-405b-9a1f-265f766e9aa2",
+      "title": "What is the latest Qwen model as of May 29 2025",
+      "created_at": "2025-12-20T07:16:09.334098",
+      "updated_at": "2025-12-20T07:16:09.348893",
+      "message_count": 1,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "8ae13b1a-fc51-4b23-bff5-d9f340a19ada": {
+      "id": "8ae13b1a-fc51-4b23-bff5-d9f340a19ada",
+      "title": "What is the latest Qwen model as of May 29 2025",
+      "created_at": "2025-12-20T07:17:57.751886",
+      "updated_at": "2025-12-20T07:45:28.775173",
+      "message_count": 3,
+      "kb_type": "wikipedia",
+      "mode": "rag"
+    },
+    "f6e792b8-70d8-4899-a44f-90a8b168bf96": {
+      "id": "f6e792b8-70d8-4899-a44f-90a8b168bf96",
+      "title": "What is love",
+      "created_at": "2025-12-20T07:48:33.488111",
+      "updated_at": "2025-12-20T08:04:26.315204",
+      "message_count": 5,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "5e714092-800c-49a7-89fc-169373ff20ce": {
+      "id": "5e714092-800c-49a7-89fc-169373ff20ce",
+      "title": "What is love",
+      "created_at": "2025-12-20T08:05:29.674749",
+      "updated_at": "2025-12-20T08:16:14.532071",
+      "message_count": 3,
+      "kb_type": "wikipedia",
+      "mode": "rag"
     }
   }
 }

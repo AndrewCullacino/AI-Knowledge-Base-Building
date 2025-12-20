@@ -38,6 +38,7 @@ export default function App() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [conversationsLoading, setConversationsLoading] = useState<boolean>(true);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   // Helper function to process update events and create timeline entries
   const processUpdateEvent = useCallback((update: any) => {
@@ -57,21 +58,22 @@ export default function App() {
     // Check for generate_queries
     if (deepResearchUpdate.generate_queries) {
       const queries = deepResearchUpdate.generate_queries.queries || [];
-      const loopCount = deepResearchUpdate.research_loop_count || 0;
+      const queryCount = queries.length;
       processedEvent = {
         title: "Generating Search Queries",
-        data: queries.join(", ") || "Planning search strategy...",
-        model: "GPT-4o-mini",
+        data: queryCount > 0 ? `Generated ${queryCount} search ${queryCount === 1 ? 'query' : 'queries'}` : "Planning search strategy...",
       };
     }
     // Check for retrieve_contexts
     else if (deepResearchUpdate.retrieve_contexts) {
-      const numContexts = deepResearchUpdate.retrieve_contexts.num_contexts || 0;
-      const newContexts = deepResearchUpdate.retrieve_contexts.new_contexts || 0;
-      const loopNum = deepResearchUpdate.retrieve_contexts.loop_count || 0;
+      const sourcesCount = deepResearchUpdate.retrieve_contexts.sources_count || 0;
+      const keywords = deepResearchUpdate.retrieve_contexts.keywords || [];
+      const keywordText = keywords.length > 0 ? keywords.join(", ") : "";
       processedEvent = {
         title: "Knowledge Base Search",
-        data: `Gathered ${numContexts} sources. Related to: ${(deepResearchUpdate.research_queries || []).slice(-2).join(", ")}`,
+        data: keywordText
+          ? `Gathered ${sourcesCount} sources. Related to: ${keywordText}.`
+          : `Gathered ${sourcesCount} sources.`,
       };
     }
     // Check for reflect
@@ -85,7 +87,6 @@ export default function App() {
         data: sufficient
           ? `Research complete. Confidence: ${(confidence * 100).toFixed(0)}%`
           : `Need more information, ${reasoning.substring(0, MAX_REASONING_PREVIEW_LENGTH)}`,
-        model: "GPT-4o",
       };
       
       if (!sufficient) {
@@ -105,43 +106,10 @@ export default function App() {
       processedEvent = {
         title: "Generating Answer",
         data: `Synthesizing ${numContexts} contexts from ${numSources} sources...`,
-        model: "GPT-4o",
       };
       hasFinalizeEventOccurredRef.current = true;
     }
-    // Check for step_status changes
-    else if (deepResearchUpdate.step_status) {
-      const status = deepResearchUpdate.step_status;
-      if (status === "initializing") {
-        processedEvent = {
-          title: "Initializing",
-          data: "Starting deep research process...",
-        };
-      } else if (status === "query_generation" && !deepResearchUpdate.generate_queries) {
-        processedEvent = {
-          title: "Generating Search Queries",
-          data: "Analyzing question and planning search strategy...",
-          model: "GPT-4o-mini",
-        };
-      } else if (status === "retrieval" && !deepResearchUpdate.retrieve_contexts) {
-        processedEvent = {
-          title: "Knowledge Base Search",
-          data: "Searching knowledge base...",
-        };
-      } else if (status === "reflection" && !deepResearchUpdate.reflect) {
-        processedEvent = {
-          title: "Reflection",
-          data: "Evaluating research quality...",
-          model: "GPT-4o",
-        };
-      } else if (status === "finalized" && !deepResearchUpdate.finalize_report) {
-        processedEvent = {
-          title: "Generating Answer",
-          data: "Composing final response...",
-          model: "GPT-4o",
-        };
-      }
-    }
+    // Skip verbose step_status messages - rely on custom events instead
 
     if (processedEvent) {
       setProcessedEventsTimeline((prevEvents) => {
@@ -174,7 +142,7 @@ export default function App() {
     all_contexts?: any[];
     research_loop_count?: number;
   }>({
-    apiUrl: "",
+    apiUrl: window.location.origin,
     assistantId: "agent",
     messagesKey: "messages",
     onUpdateEvent: (update: any) => {
@@ -199,17 +167,16 @@ export default function App() {
         
         switch (step) {
           case "generate_queries_start":
-            processedEvent = {
-              title: "Generating Search Queries",
-              data: event.message || "Analyzing question...",
-              model: "GPT-4o-mini",
-            };
+            // Don't show the "start" event, wait for complete event with queries
+            // This prevents showing "Planning search strategy..." before queries are ready
             break;
           case "generate_queries_complete":
+            const queries = event.queries || [];
+            // Show first query as concise summary instead of count
+            const querySummary = queries.length > 0 ? queries[0] : "Search queries generated";
             processedEvent = {
               title: "Generating Search Queries",
-              data: (event.queries || []).join(", ") || "Queries generated",
-              model: "GPT-4o-mini",
+              data: querySummary,
             };
             break;
           case "retrieve_start":
@@ -219,34 +186,39 @@ export default function App() {
             };
             break;
           case "retrieve_complete":
+            // Format: "Gathered N sources. Related to: keyword1, keyword2, keyword3."
+            const sourceCount = event.sources_count || event.total_contexts || 0;
+            const keywords = event.keywords || event.related_keywords || [];
+            const keywordText = keywords.length > 0 ? keywords.slice(0, 3).join(", ") : "";
             processedEvent = {
               title: "Knowledge Base Search",
-              data: `Gathered ${event.total_contexts || 0} contexts from ${event.sources_count || 0} sources`,
+              data: keywordText
+                ? `Gathered ${sourceCount} sources. Related to: ${keywordText}.`
+                : `Gathered ${sourceCount} sources.`,
             };
             break;
           case "reflect_start":
             processedEvent = {
               title: "Reflection",
               data: event.message || "Evaluating research quality...",
-              model: "GPT-4o",
             };
             break;
           case "reflect_complete":
             const sufficient = event.sufficient;
+            const fullReasoning = event.reasoning || "";
             processedEvent = {
               title: "Reflection",
               data: sufficient
                 ? `Research complete. Confidence: ${((event.confidence || 0) * 100).toFixed(0)}%`
-                : `Need more information. ${(event.reasoning || "").substring(0, MAX_REFLECTION_PREVIEW_LENGTH)}...`,
-              model: "GPT-4o",
+                : `Need more information, ${fullReasoning}`,
             };
-            
+
             if (!sufficient) {
-              // Continue searching - add a "Searching..." event
+              // Continue searching - add a "Searching web..." event
               setTimeout(() => {
                 setProcessedEventsTimeline((prev) => [
                   ...prev,
-                  { title: "Searching...", data: "Gathering more information..." }
+                  { title: "Searching web", data: "Gathering additional sources..." }
                 ]);
               }, 100);
             }
@@ -255,7 +227,6 @@ export default function App() {
             processedEvent = {
               title: "Generating Answer",
               data: event.message || "Synthesizing research...",
-              model: "GPT-4o",
             };
             hasFinalizeEventOccurredRef.current = true;
             break;
@@ -263,7 +234,6 @@ export default function App() {
             processedEvent = {
               title: "Generating Answer",
               data: `Report ready (${event.sources_count || 0} sources)`,
-              model: "GPT-4o",
             };
             break;
         }

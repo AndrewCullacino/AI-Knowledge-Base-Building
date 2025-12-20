@@ -143,8 +143,9 @@ class TestRetrieveMultiContexts:
 class TestReflectOnResearch:
     """Test suite for reflection node."""
 
+    @patch('agent.deep_research_graph.dispatch_custom_event')
     @patch('agent.deep_research_graph.ChatOllama')
-    def test_reflect_sufficient(self, mock_ollama, deep_research_state, mock_config):
+    def test_reflect_sufficient(self, mock_ollama, mock_dispatch, deep_research_state, mock_config):
         """Test reflection when research is sufficient."""
         # Setup state with contexts
         deep_research_state["all_contexts"] = [
@@ -172,8 +173,9 @@ class TestReflectOnResearch:
         assert result["reflection_result"]["confidence"] == 0.9
         assert result["step_status"] == "reflection"
 
+    @patch('agent.deep_research_graph.dispatch_custom_event')
     @patch('agent.deep_research_graph.ChatOllama')
-    def test_reflect_insufficient(self, mock_ollama, deep_research_state, mock_config):
+    def test_reflect_insufficient(self, mock_ollama, mock_dispatch, deep_research_state, mock_config):
         """Test reflection when more research is needed."""
         # Setup state with minimal contexts
         deep_research_state["all_contexts"] = [
@@ -200,8 +202,9 @@ class TestReflectOnResearch:
         assert result["reflection_result"]["confidence"] == 0.4
         assert "implementation" in result["reflection_result"]["reasoning"].lower()
 
+    @patch('agent.deep_research_graph.dispatch_custom_event')
     @patch('agent.deep_research_graph.ChatOllama')
-    def test_reflect_json_parse_error(self, mock_ollama, deep_research_state, mock_config):
+    def test_reflect_json_parse_error(self, mock_ollama, mock_dispatch, deep_research_state, mock_config):
         """Test fallback behavior when JSON parsing fails."""
         # Setup state
         deep_research_state["all_contexts"] = [

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { SquarePen, Send, StopCircle } from "lucide-react";
+import { SquarePen, Send, StopCircle, Mic } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
 
 // Updated InputFormProps
 interface InputFormProps {
@@ -18,6 +19,32 @@ export const InputForm: React.FC<InputFormProps> = ({
   hasHistory,
 }) => {
   const [internalInputValue, setInternalInputValue] = useState("");
+  const {
+    isRecording,
+    transcript,
+    error: voiceError,
+    isSupported,
+    isProcessing,
+    startRecording,
+    stopRecording,
+    resetTranscript,
+  } = useVoiceInput();
+
+  // Update input value when voice transcript changes
+  useEffect(() => {
+    if (transcript) {
+      setInternalInputValue((prev) => (prev ? prev + " " : "") + transcript);
+      resetTranscript();
+    }
+  }, [transcript, resetTranscript]);
+
+  // Show voice error as toast or inline message
+  useEffect(() => {
+    if (voiceError) {
+      console.error("Voice input error:", voiceError);
+      // You could also show a toast notification here
+    }
+  }, [voiceError]);
 
   const handleInternalSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -31,6 +58,14 @@ export const InputForm: React.FC<InputFormProps> = ({
     if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       handleInternalSubmit();
+    }
+  };
+
+  const handleVoiceButtonClick = async () => {
+    if (isRecording) {
+      await stopRecording();
+    } else {
+      await startRecording();
     }
   };
 
@@ -60,14 +95,47 @@ export const InputForm: React.FC<InputFormProps> = ({
 
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-2">
-           <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg h-8 w-8"
-           >
-             <span className="text-lg">+</span>
-           </Button>
+          {isSupported && (
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className={`rounded-lg h-8 w-8 transition-colors ${
+                  isRecording
+                    ? "text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                    : isProcessing
+                    ? "text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
+                onClick={handleVoiceButtonClick}
+                disabled={isProcessing}
+                title={
+                  isRecording
+                    ? "Stop recording"
+                    : isProcessing
+                    ? "Processing audio..."
+                    : "Start voice input"
+                }
+              >
+                <Mic
+                  className={`h-5 w-5 ${
+                    isRecording || isProcessing ? "animate-pulse" : ""
+                  }`}
+                />
+              </Button>
+              {isProcessing && (
+                <span className="text-xs text-muted-foreground animate-pulse">
+                  Transcribing...
+                </span>
+              )}
+              {voiceError && (
+                <span className="text-xs text-red-500 max-w-[200px] truncate" title={voiceError}>
+                  {voiceError}
+                </span>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex-shrink-0">
           {isLoading ? (
