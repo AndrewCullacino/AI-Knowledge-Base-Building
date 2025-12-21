@@ -58,8 +58,8 @@
       "id": "72b99cef-3261-43f0-8725-1a907bd8ed39",
       "title": "What is the latest Gemini model?",
       "created_at": "2025-12-20T07:10:41.428993",
-      "updated_at": "2025-12-20T07:13:10.566641",
-      "message_count": 2,
+      "updated_at": "2025-12-20T11:58:52.786831",
+      "message_count": 3,
       "kb_type": "wikipedia",
       "mode": "rag"
     },
@@ -94,10 +94,55 @@
       "id": "5e714092-800c-49a7-89fc-169373ff20ce",
       "title": "What is love",
       "created_at": "2025-12-20T08:05:29.674749",
-      "updated_at": "2025-12-20T08:16:14.532071",
-      "message_count": 3,
+      "updated_at": "2025-12-20T10:30:11.747212",
+      "message_count": 4,
       "kb_type": "wikipedia",
       "mode": "rag"
+    },
+    "6cff211b-3933-4b58-b32d-10a9556aa1d2": {
+      "id": "6cff211b-3933-4b58-b32d-10a9556aa1d2",
+      "title": "What is love",
+      "created_at": "2025-12-20T11:35:36.040057",
+      "updated_at": "2025-12-20T11:35:56.691904",
+      "message_count": 1,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "c6c8e565-b959-46f5-9a79-b75b03cb2a6c": {
+      "id": "c6c8e565-b959-46f5-9a79-b75b03cb2a6c",
+      "title": "What is LLM?",
+      "created_at": "2025-12-20T11:39:42.267509",
+      "updated_at": "2025-12-20T12:03:37.117660",
+      "message_count": 5,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "29f45d73-e50c-4c77-9bfa-2991f02c35e3": {
+      "id": "29f45d73-e50c-4c77-9bfa-2991f02c35e3",
+      "title": "What is love",
+      "created_at": "2025-12-20T12:11:40.566536",
+      "updated_at": "2025-12-20T12:12:25.541887",
+      "message_count": 1,
+      "kb_type": "wikipedia",
+      "mode": "rag"
+    },
+    "ea244431-abbb-47db-84f0-949d71d7722a": {
+      "id": "ea244431-abbb-47db-84f0-949d71d7722a",
+      "title": "What is love",
+      "created_at": "2025-12-20T12:13:55.091624",
+      "updated_at": "2025-12-20T12:17:38.689274",
+      "message_count": 2,
+      "kb_type": "wikipedia",
+      "mode": "deep_research"
+    },
+    "e04862cc-9a5b-452c-904d-f5e38e7d2b73": {
+      "id": "e04862cc-9a5b-452c-904d-f5e38e7d2b73",
+      "title": "New conversation",
+      "created_at": "2025-12-20T12:19:10.323419",
+      "updated_at": "2025-12-20T12:19:10.323437",
+      "message_count": 0,
+      "kb_type": "custom",
+      "mode": "deep_research"
     }
   }
 }

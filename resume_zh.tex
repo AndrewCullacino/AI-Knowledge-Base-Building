@@ -1,0 +1,220 @@
+%-------------------------
+% 简历 - 专业技术格式（中文版）
+% 作者: 王金田 (Andrew Wang)
+% 协议: MIT
+%-------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{xeCJK}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+% glyphtounicode not needed for XeLaTeX
+
+% 中文字体设置（优先级顺序：系统默认字体）
+% macOS用户会使用PingFang/STSong，Windows用户会使用SimSun/SimHei
+\setCJKmainfont{STSong}[
+    BoldFont=STHeiti,
+    ItalicFont=STKaiti
+]
+\setCJKsansfont{STHeiti}
+\setCJKmonofont{STFangsong}
+
+%----------字体选项----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% 调整页边距
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% 章节格式
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% XeLaTeX automatically generates Unicode-compatible PDFs
+
+%-------------------------
+% 自定义命令
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\classesList}[4]{
+    \item\small{
+        {#1 #2 #3 #4 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{1.0\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{1.001\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \textbf{\small #2}\\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  简历开始  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------标题----------
+\begin{center}
+    {\Huge \scshape 王金田 (Andrew Wang)} \\ \vspace{1pt}
+    \small
+    \raisebox{-0.1\height}\faPhone\ +86-xxx-xxxx-xxxx ~
+    \href{mailto:your.email@example.com}{\raisebox{-0.2\height}\faEnvelope\  \underline{your.email@example.com}} ~
+    \href{https://linkedin.com/in/yourprofile}{\raisebox{-0.2\height}\faLinkedin\ \underline{linkedin.com/in/yourprofile}} ~
+    \href{https://github.com/yourusername}{\raisebox{-0.2\height}\faGithub\ \underline{github.com/yourusername}}
+    \vspace{-8pt}
+\end{center}
+
+%-----------教育背景-----------
+\section{教育背景}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {您的大学名称}{预计毕业时间：20XX年XX月}
+      {计算机科学学士，GPA: 3.XX/4.0}{城市，国家}
+      \resumeItemListStart
+        \resumeItem{\textbf{相关课程：}数据结构、算法、机器学习、数据库系统、Web开发、软件工程}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------专业技能-----------
+\section{专业技能}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{编程语言}{: Python, TypeScript, JavaScript, SQL, HTML/CSS, LaTeX} \\
+     \textbf{AI/ML 框架}{: LangGraph, LangChain, Ollama, RAG系统, 向量数据库, Embeddings} \\
+     \textbf{后端框架}{: FastAPI, RESTful APIs, WebSocket, 事件驱动架构} \\
+     \textbf{前端框架}{: React 19, Vite, Tailwind CSS, React Hooks, 状态管理} \\
+     \textbf{数据库与存储}{: PostgreSQL, Redis, ChromaDB, 向量嵌入, 文档存储} \\
+     \textbf{DevOps 与工具}{: Docker, Docker Compose, Git, GitHub, LangSmith, Ollama} \\
+     \textbf{架构模式}{: 状态机, 路由模式, 事件流, 微服务, RAG架构} \\
+    }}
+ \end{itemize}
+ \vspace{-16pt}
+
+%-----------项目经历-----------
+\section{项目经历}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{智能知识库问答系统} $|$ \emph{Python, LangGraph, FastAPI, React, TypeScript, Ollama}}{2024年12月}
+          \resumeItemListStart
+            \resumeItem{架构设计了\textbf{LangGraph状态机工作流}，编排三种对话模式（RAG模式、GPT模式、深度研究模式），实现条件路由和事件驱动流式传输，支持跨多个知识源的灵活AI问答}
+            \resumeItem{工程化实现了\textbf{多轮深度研究系统}，集成AI驱动的反思机制，通过3轮迭代自动优化搜索查询，借助自动化质量评估和差距分析实现85\%+的置信度评分}
+            \resumeItem{实现了\textbf{自定义知识库上传至查询全流程}，支持10+种文档格式（PDF、DOCX、TXT），通过语义分块将文档处理为向量嵌入，实现基于相似度的检索}
+            \resumeItem{设计了\textbf{知识库路由抽象层}，实现CNB API、Wikipedia和自定义知识库之间的无缝切换，减少60\%代码重复，提升系统扩展性}
+            \resumeItem{构建了\textbf{实时事件流架构}，使用FastAPI WebSocket和自定义LangGraph事件，在多轮研究过程中提供<100ms延迟的实时进度更新，显著提升用户体验}
+            \resumeItem{优化了\textbf{多模型协作策略}，利用轻量级模型（Qwen2.5:3b）生成查询，功能强大的模型（Qwen2.5:7b）进行分析，在保证质量的同时将平均查询延迟降低60\%}
+            \resumeItem{开发了\textbf{全栈Web界面}，使用React 19和TypeScript实现，具备对话历史管理、可点击的来源引用追踪、动态知识库选择及动画UI组件}
+          \resumeItemListEnd
+          \vspace{-13pt}
+
+      % 如需添加更多项目，在此处添加
+      % \resumeProjectHeading
+      %     {\textbf{其他项目名称} $|$ \emph{技术栈}}{年月}
+      %     \resumeItemListStart
+      %       \resumeItem{项目描述和成就...}
+      %     \resumeItemListEnd
+    \resumeSubHeadingListEnd
+\vspace{-15pt}
+
+%-----------工作经历-----------
+\section{工作经历}
+  \resumeSubHeadingListStart
+
+    % 取消注释并填写您的工作经历
+    % \resumeSubheading
+    %   {公司名称}{年月 -- 年月}
+    %   {职位名称}{城市，国家}
+    %   \resumeItemListStart
+    %     \resumeItem{您的职责和成就描述...}
+    %     \resumeItem{另一项可量化的成就...}
+    %   \resumeItemListEnd
+
+    % 对于无工作经验的学生，可以添加：
+    \resumeSubheading
+      {开源贡献与个人项目}{2024年 -- 至今}
+      {独立开发者}{远程}
+      \resumeItemListStart
+        \resumeItem{使用现代框架开发多个全栈应用，包括LangGraph、FastAPI和React}
+        \resumeItem{实现了集成大语言模型和RAG架构的AI驱动系统}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+\vspace{-16pt}
+
+%-----------其他部分-----------
+% \section{证书}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{证书名称}{: 颁发机构，年月} \\
+%      \textbf{另一个证书}{: 颁发机构，年月} \\
+%     }}
+%  \end{itemize}
+%  \vspace{-16pt}
+
+% \section{奖项与荣誉}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{奖项名称}{: 描述，年份} \\
+%      \textbf{另一个奖项}{: 描述，年份} \\
+%     }}
+%  \end{itemize}
+%  \vspace{-16pt}
+
+\end{document}

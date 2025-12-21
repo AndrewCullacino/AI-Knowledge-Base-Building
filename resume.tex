@@ -1,0 +1,211 @@
+%-------------------------
+% Resume - Professional Technical Format
+% Author: Wang Jintian (Andrew)
+% License: MIT
+%-------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\input{glyphtounicode}
+
+%----------FONT OPTIONS----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\classesList}[4]{
+    \item\small{
+        {#1 #2 #3 #4 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{1.0\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{1.001\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \textbf{\small #2}\\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Huge \scshape Wang Jintian (Andrew)} \\ \vspace{1pt}
+    \small
+    \raisebox{-0.1\height}\faPhone\ +1-xxx-xxx-xxxx ~
+    \href{mailto:your.email@example.com}{\raisebox{-0.2\height}\faEnvelope\  \underline{your.email@example.com}} ~
+    \href{https://linkedin.com/in/yourprofile}{\raisebox{-0.2\height}\faLinkedin\ \underline{linkedin.com/in/yourprofile}} ~
+    \href{https://github.com/yourusername}{\raisebox{-0.2\height}\faGithub\ \underline{github.com/yourusername}}
+    \vspace{-8pt}
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Your University Name}{Expected Graduation: Month 20XX}
+      {Bachelor of Science in Computer Science, GPA: 3.XX/4.0}{City, State/Country}
+      \resumeItemListStart
+        \resumeItem{\textbf{Relevant Coursework:} Data Structures, Algorithms, Machine Learning, Database Systems, Web Development, Software Engineering}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python, TypeScript, JavaScript, SQL, HTML/CSS, LaTeX} \\
+     \textbf{AI/ML Frameworks}{: LangGraph, LangChain, Ollama, RAG Systems, Vector Databases, Embeddings} \\
+     \textbf{Backend Frameworks}{: FastAPI, RESTful APIs, WebSocket, Event-Driven Architecture} \\
+     \textbf{Frontend Frameworks}{: React 19, Vite, Tailwind CSS, React Hooks, State Management} \\
+     \textbf{Databases \& Storage}{: PostgreSQL, Redis, ChromaDB, Vector Embeddings, Document Stores} \\
+     \textbf{DevOps \& Tools}{: Docker, Docker Compose, Git, GitHub, LangSmith, Ollama} \\
+     \textbf{Architecture Patterns}{: State Machines, Router Pattern, Event Streaming, Microservices, RAG Architecture} \\
+    }}
+ \end{itemize}
+ \vspace{-16pt}
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{Intelligent Knowledge Base Q\&A System} $|$ \emph{Python, LangGraph, FastAPI, React, TypeScript, Ollama}}{Dec 2024}
+          \resumeItemListStart
+            \resumeItem{Architected a \textbf{LangGraph state machine workflow} orchestrating 3 distinct conversation modes (RAG, GPT, DeepResearch) with conditional routing and event-driven streaming, enabling flexible AI-powered question answering across multiple knowledge sources}
+            \resumeItem{Engineered a \textbf{multi-round DeepResearch system} with AI-driven reflection mechanism that iteratively refines search queries across 3 loops, achieving 85\%+ confidence scores through automated quality assessment and gap analysis}
+            \resumeItem{Implemented \textbf{custom knowledge base upload-to-query pipeline} supporting 10+ document formats (PDF, DOCX, TXT), processing documents into vector embeddings with semantic chunking and enabling similarity-based retrieval}
+            \resumeItem{Designed a \textbf{knowledge base router abstraction layer} enabling seamless switching between CNB API, Wikipedia, and custom knowledge bases, reducing code duplication by 60\% and improving system extensibility}
+            \resumeItem{Built \textbf{real-time event streaming architecture} using FastAPI WebSocket and custom LangGraph events, providing live progress updates during multi-round research with <100ms latency for enhanced user experience}
+            \resumeItem{Optimized \textbf{multi-model collaboration strategy} leveraging lightweight models (Qwen2.5:3b) for query generation and capable models (Qwen2.5:7b) for analysis, reducing average query latency by 60\% while maintaining quality}
+            \resumeItem{Developed \textbf{full-stack web interface} with React 19 and TypeScript, featuring conversation history management, source citation tracking with clickable references, and dynamic knowledge base selection with animated UI components}
+          \resumeItemListEnd
+          \vspace{-13pt}
+
+      % Add more projects here as needed
+      % \resumeProjectHeading
+      %     {\textbf{Another Project Name} $|$ \emph{Tech Stack}}{Month Year}
+      %     \resumeItemListStart
+      %       \resumeItem{Project description and achievements...}
+      %     \resumeItemListEnd
+    \resumeSubHeadingListEnd
+\vspace{-15pt}
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    % Uncomment and fill in your experience
+    % \resumeSubheading
+    %   {Company Name}{Month Year -- Month Year}
+    %   {Position Title}{City, State/Country}
+    %   \resumeItemListStart
+    %     \resumeItem{Description of your responsibilities and achievements...}
+    %     \resumeItem{Another achievement with quantifiable results...}
+    %   \resumeItemListEnd
+
+    % For students with no experience, you can add:
+    \resumeSubheading
+      {Open Source Contributions \& Personal Projects}{2024 -- Present}
+      {Independent Developer}{Remote}
+      \resumeItemListStart
+        \resumeItem{Developed multiple full-stack applications using modern frameworks including LangGraph, FastAPI, and React}
+        \resumeItem{Implemented AI-powered systems integrating large language models with RAG architectures}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+\vspace{-16pt}
+
+%-----------ADDITIONAL SECTIONS-----------
+% \section{Certifications}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{Certification Name}{: Issuing Organization, Month Year} \\
+%      \textbf{Another Certification}{: Issuing Organization, Month Year} \\
+%     }}
+%  \end{itemize}
+%  \vspace{-16pt}
+
+% \section{Awards \& Honors}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{Award Name}{: Description, Year} \\
+%      \textbf{Another Award}{: Description, Year} \\
+%     }}
+%  \end{itemize}
+%  \vspace{-16pt}
+
+\end{document}

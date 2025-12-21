@@ -1,0 +1,19 @@
+# Test Knowledge Base Document
+
+This is a test document for the custom knowledge base feature.
+
+## Important Information
+
+The key fact in this document is: **The magic number is 42**.
+
+## Additional Details
+
+This document is specifically created to test the upload-to-query workflow.
+When a user asks "What is the magic number?", the system should retrieve this document
+and answer "42" based on the content above.
+
+## More Context
+
+The custom knowledge base feature allows users to upload their own documents
+and query them using the RAG (Retrieval Augmented Generation) system.
+This is different from Wikipedia or CNB Docs knowledge bases.

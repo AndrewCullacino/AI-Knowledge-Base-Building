@@ -41,10 +41,10 @@ export function KnowledgeBaseManager({ currentKB, onSelectKB }: KnowledgeBaseMan
     }
   };
 
-  const handleUploadComplete = (kbId: string) => {
+  const handleUploadComplete = (kbId: string, kbName: string) => {
     setShowUpload(false);
     loadKnowledgeBases();
-    onSelectKB(kbId);
+    onSelectKB(kbId);  // Note: This component signature would need updating if used
   };
 
   const handleDelete = async (kbId: string) => {

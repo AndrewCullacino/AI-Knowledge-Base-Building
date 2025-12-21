@@ -1,0 +1,36 @@
+{
+  "knowledge_bases": {
+    "custom_7b70b2435a18": {
+      "id": "custom_7b70b2435a18",
+      "name": "Custom KB 435a18",
+      "created_at": "2025-12-20T11:34:31.328570",
+      "document_count": 0,
+      "chunk_count": 0,
+      "documents": {}
+    },
+    "custom_2aef4de66d9e": {
+      "id": "custom_2aef4de66d9e",
+      "name": "Custom KB e66d9e",
+      "created_at": "2025-12-20T11:38:50.679824",
+      "document_count": 0,
+      "chunk_count": 0,
+      "documents": {}
+    },
+    "custom_192777bb7d94": {
+      "id": "custom_192777bb7d94",
+      "name": "Custom KB bb7d94",
+      "created_at": "2025-12-20T11:57:58.971549",
+      "document_count": 0,
+      "chunk_count": 0,
+      "documents": {}
+    },
+    "custom_497a816f5958": {
+      "id": "custom_497a816f5958",
+      "name": "Custom KB 6f5958",
+      "created_at": "2025-12-20T12:18:17.074969",
+      "document_count": 0,
+      "chunk_count": 0,
+      "documents": {}
+    }
+  }
+}
